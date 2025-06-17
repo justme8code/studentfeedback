@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import {AppLayout} from "@/components/layout/AppLayout";
 import {ThemeProvider} from "next-themes";
+import {Toaster} from "@/components/ui/sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,15 +31,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+      <Toaster richColors position="top-right" />
       <ThemeProvider
           attribute="class" // This tells next-themes to update the class on the <html> tag
           defaultTheme="system" // Can be "light", "dark", or "system"
           enableSystem // Allows respecting the user's OS preference
           disableTransitionOnChange // Prevents theme transitions on page load/hydration
       >
-        <AppLayout>
           {children}
-        </AppLayout>
       </ThemeProvider>
       </body>
     </html>

@@ -67,15 +67,15 @@ export default function CoursesPage() {
     const [searchTerm, setSearchTerm] = useState(""); // For search functionality
 
     const handleGiveFeedback = (courseId: string, courseName: string) => {
-        // Navigate to the feedback submission form
+        // Navigate to the feedbacks submission form
         router.push(`/feedback/submit?courseId=${courseId}&courseName=${encodeURIComponent(courseName)}`);
-        // Note: We updated the feedback submission page to potentially accept courseName as a query param.
-        // Or directly to /feedback/submit/[courseId] if you prefer dynamic routes there too
-        // alert(`Navigate to give feedback for: ${courseName} (ID: ${courseId})`);
+        // Note: We updated the feedbacks submission page to potentially accept courseName as a query param.
+        // Or directly to /feedbacks/submit/[courseId] if you prefer dynamic routes there too
+        // alert(`Navigate to give feedbacks for: ${courseName} (ID: ${courseId})`);
     };
 
     const handleViewMyFeedback = (courseId: string) => {
-        // Navigate to view the submitted feedback details
+        // Navigate to view the submitted feedbacks details
         router.push(`/feedback/view/${courseId}`);
     };
 
@@ -108,7 +108,7 @@ export default function CoursesPage() {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        {/* Future: Add filters for semester, feedback status etc. */}
+                        {/* Future: Add filters for semester, feedbacks status etc. */}
                     </div>
 
                     {filteredCourses.length > 0 ? (
@@ -172,7 +172,7 @@ export default function CoursesPage() {
                             <Library className="h-16 w-16 text-muted-foreground mb-4" />
                             <h3 className="text-xl font-semibold">No Courses Found</h3>
                             <p className="text-muted-foreground">
-                                {searchTerm ? "No courses match your search criteria." : "You are not currently enrolled in any courses, or no courses are available."}
+                                {searchTerm ? "No student-courses match your search criteria." : "You are not currently enrolled in any student-courses, or no student-courses are available."}
                             </p>
                             {searchTerm && (
                                 <Button variant="link" onClick={() => setSearchTerm("")}>Clear search</Button>

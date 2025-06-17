@@ -21,19 +21,19 @@ const navItems = [
         icon: <LayoutDashboard className="h-5 w-5" />,
     },
     {
-        href: "/courses",
+        href: "/student-courses",
         label: "Courses",
         icon: <BookMarked className="h-5 w-5" />,
     },
     {
-        href: "/my-feedback",
+        href: "/my-feedbacks",
         label: "My Feedback",
         icon: <MessageSquareText className="h-5 w-5" />,
     },
     // You can add more sections like Profile/Settings directly here if desired
     // Or keep them in UserNav dropdown for a cleaner sidebar
     {
-        href: "/profile", // Assuming a profile page
+        href: "/profiles", // Assuming a profiles page
         label: "Profile",
         icon: <User className="h-5 w-5" />,
     },
@@ -56,7 +56,7 @@ export function SideNav({ className, isMobile = false, onLinkClick, ...props }: 
     return (
         <nav
             className={cn(
-                "flex flex-col space-y-2", // Basic vertical stacking
+                "flex flex-col gap-2 py-4 px-2 bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-gray-100 dark:border-neutral-800", // Material/Google style with dark mode
                 className
             )}
             {...props}
@@ -65,13 +65,13 @@ export function SideNav({ className, isMobile = false, onLinkClick, ...props }: 
                 <Link
                     key={item.href}
                     href={item.href}
-                    onClick={onLinkClick} // Call if mobile and link is clicked
+                    onClick={onLinkClick}
                     className={cn(
-                        buttonVariants({ variant: "ghost" }), // Use button styles for consistency
-                        "w-full justify-start text-base h-11", // Custom height and text size
+                        buttonVariants({ variant: pathname === item.href ? "default" : "ghost", size: "lg" }),
+                        "w-full justify-start text-base h-12 rounded-full transition-all duration-150 flex items-center gap-3",
                         pathname === item.href
-                            ? "bg-primary/10 text-primary hover:bg-primary/20" // Active link style
-                            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                            ? "bg-blue-600 text-white shadow-md hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-600"
+                            : "text-gray-700 hover:bg-gray-100 hover:text-blue-700 dark:text-gray-200 dark:hover:bg-neutral-800 dark:hover:text-blue-400"
                     )}
                 >
                     {item.icon && <span className="mr-3">{item.icon}</span>}

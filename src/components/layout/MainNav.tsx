@@ -14,8 +14,8 @@ import { Home, BookMarked, MessageSquareText } from "lucide-react"; // Icons
 
 const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: <Home className="h-4 w-4" /> },
-    { href: "/courses", label: "Courses", icon: <BookMarked className="h-4 w-4" /> }, // Assuming a /courses page
-    { href: "/my-feedback", label: "My Feedback", icon: <MessageSquareText className="h-4 w-4" /> }, // Assuming a /my-feedback page
+    { href: "/student-courses", label: "Courses", icon: <BookMarked className="h-4 w-4" /> }, // Assuming a /student-courses page
+    { href: "/my-feedbacks", label: "My Feedback", icon: <MessageSquareText className="h-4 w-4" /> }, // Assuming a /my-feedbacks page
 ];
 
 export function MainNav({

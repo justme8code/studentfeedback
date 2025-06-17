@@ -57,6 +57,52 @@ export const changePasswordFormSchema = z.object({
     path: ["confirmNewPassword"], // Path of error
 });
 
+
+
+// Define the validation schema(for sign up)
+export const signUpFormSchema = z.object({
+    fullName: z.string().min(2, {
+        message: "Full name must be at least 2 characters.",
+    }),
+    email: z.string().email({
+        message: "Please enter a valid email address.",
+    }),
+    password: z.string().min(4, {
+        message: "Password must be at least 8 characters.",
+    }),
+    // You could add confirmPassword here if needed:
+    confirmPassword: z.string().min(4),
+})
+    .refine((data) => data.password === data.confirmPassword, { // If using confirmPassword
+        message: "Passwords don't match",
+        path: ["confirmPassword"], // path of error
+    });
+
+
+// Define the validation schema
+export const loginFormSchema = z.object({
+    email: z.string().email({
+        message: "Please enter a valid email address.",
+    }),
+    password: z.string().min(4, {
+        message: "Password must be at least 6 characters.",
+    }),
+});
+
+
+
+export const facultyFormSchema = z.object({
+    name: z.string().min(2, { message: "Faculty name must be at least 2 characters." })
+});
+
+export const departmentFormSchema = z.object({
+    name: z.string().min(2, { message: "Department name must be at least 2 characters." }),
+    faculty_id: z.string().min(1, { message: "Faculty is required." })
+});
+
+
 export type UpdateProfileFormData = z.infer<typeof updateProfileFormSchema>;
 export type ChangePasswordFormData = z.infer<typeof changePasswordFormSchema>;
 export type FeedbackFormData = z.infer<typeof feedbackFormSchema>;
+export type FacultyFormData = z.infer<typeof facultyFormSchema>;
+export type DepartmentFormData = z.infer<typeof departmentFormSchema>;

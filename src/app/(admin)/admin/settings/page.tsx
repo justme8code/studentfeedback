@@ -152,7 +152,7 @@ export default function SettingsPage() {
             <Separator />
 
             {/* ... (Security Settings Card) ... */}
-            <Card>
+           {/* <Card>
                 <CardHeader>
                     <CardTitle className="text-xl font-semibold flex items-center">
                         <ShieldCheck className="mr-2 h-5 w-5" /> Security
@@ -176,7 +176,11 @@ export default function SettingsPage() {
                         More security settings like connected devices, password policies, etc., would go here.
                     </p>
                 </CardContent>
-            </Card>
+            </Card>*/}
+
+            <Separator />
+
+
         </div>
     );
 }

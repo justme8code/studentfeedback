@@ -1,8 +1,9 @@
-"use client"; // Required for client-side interactivity
+  "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useRouter } from "next/navigation"; // 1. Import useRouter for redirection
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,49 +23,104 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-
-// Define the validation schema
-const signUpFormSchema = z.object({
-    fullName: z.string().min(2, {
-        message: "Full name must be at least 2 characters.",
-    }),
-    email: z.string().email({
-        message: "Please enter a valid email address.",
-    }),
-    password: z.string().min(8, {
-        message: "Password must be at least 8 characters.",
-    }),
-    // You could add confirmPassword here if needed:
-    // confirmPassword: z.string().min(8),
-})
-// .refine((data) => data.password === data.confirmPassword, { // If using confirmPassword
-//   message: "Passwords don't match",
-//   path: ["confirmPassword"], // path of error
-// });
-
+import { signUpFormSchema } from "@/lib/schema";
+import { signUp } from "@/lib/api/calls/auth";
+import {useLoadingStore} from "@/lib/hooks/use-loading-store";
+import {useToast} from "@/lib/hooks/use-toast-store";
+import {saveUserAcademicInfo} from "@/lib/api/calls/acadamics";
+import {useState} from "react";
+import {AcademicInfoModal} from "@/components/modals/acadamic-info-modal";
+  import {useUserStore} from "@/lib/hooks/useUserStore";
+// Note: The FullPageLoader is now in the layout, so we don't need to import or render it here.
 
 export function SignUpPage() {
-    // 1. Define your form.
+    const { show, hide } = useLoadingStore();
+    const router = useRouter();
+    // 2. Initialize the hook to get your helper functions
+    const { showSuccessToast, showErrorToast } = useToast();
+    const [isAcademicModalOpen, setIsAcademicModalOpen] = useState(false);
+    const { setUser } = useUserStore();
+
+
     const form = useForm<z.infer<typeof signUpFormSchema>>({
         resolver: zodResolver(signUpFormSchema),
         defaultValues: {
             fullName: "",
             email: "",
             password: "",
+            confirmPassword: "",
         },
     });
 
-    // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof signUpFormSchema>) {
-        // Do something with the form values.
-        // ✅ This is where you'd call your registration API.
-        console.log("Sign Up data:", values);
-        alert(`Sign Up submitted!\nFull Name: ${values.fullName}\nEmail: ${values.email}\nPassword: (hidden)`);
-        form.reset();
+
+    // 5. Create a save handler to pass to the modal
+    const handleSaveAcademicInfo = async (data: { facultyId: string; departmentId: string }) => {
+        show("Saving your information...");
+        try {
+            const { success, message } = await saveUserAcademicInfo(data);
+            if (success) {
+                showSuccessToast(message || "Information saved!");
+                setIsAcademicModalOpen(false); // Close the modal
+                router.push("/dashboard"); // Finally, redirect
+            } else {
+                showErrorToast(message || "Could not save information.");
+            }
+        } catch (error) {
+            console.error("Save academic info error:", error);
+            showErrorToast("An unexpected error occurred.");
+        } finally {
+            hide();
+        }
+    };
+
+
+    async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
+        show("Creating your account...");
+
+        try {
+            // Assume signUp now returns: { status: boolean, message: string, new_user: boolean }
+            const {user, status, message, new_user } = await signUp(values);
+
+            if (status) {
+                if (new_user) {
+                   if (user.role_id === 2) {
+                       // NEW USER: Open the modal instead of redirecting
+                       setUser(user);
+                       hide(); // Hide the full page loader
+                       showSuccessToast(message || "Account created! Please complete your profile.");
+                       setIsAcademicModalOpen(true); // Open the modal
+                   }
+                } else {
+                    // RETURNING USER (already verified, etc.)
+                    showSuccessToast(message || "Welcome back!");
+                    router.push("/dashboard");
+                }
+            } else {
+                showErrorToast(message || "Sign-up failed. Please try again.");
+            }
+        } catch (error) {
+            console.error("Sign-up error:", error);
+            showErrorToast("An unexpected error occurred. Please try again later.");
+        } finally {
+            // We only hide the loader if the modal isn't about to open
+            if (!isAcademicModalOpen) {
+                hide();
+            }
+        }
     }
 
     return (
+        // The FullPageLoader is now managed globally by the layout, so we remove it from here.
         <div className="flex min-h-screen items-center justify-center bg-background p-4">
+
+
+            <AcademicInfoModal
+                isOpen={isAcademicModalOpen}
+                onClose={() => setIsAcademicModalOpen(false)}
+                onSave={handleSaveAcademicInfo}
+            />
+
+
             <Card className="w-full max-w-sm">
                 <CardHeader>
                     <CardTitle className="text-2xl font-bold">Create an Account</CardTitle>
@@ -74,6 +130,7 @@ export function SignUpPage() {
                 </CardHeader>
                 <CardContent>
                     <Form {...form}>
+                        {/* We add form.formState.isSubmitting to disable the button while processing */}
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <FormField
                                 control={form.control}
@@ -114,22 +171,21 @@ export function SignUpPage() {
                                     </FormItem>
                                 )}
                             />
-                            {/* Optional: Confirm Password
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              */}
-                            <Button type="submit" className="w-full">
+                            <FormField
+                                control={form.control}
+                                name="confirmPassword"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Confirm Password</FormLabel>
+                                        <FormControl>
+                                            <Input type="password" placeholder="••••••••" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                                 Sign Up
                             </Button>
                         </form>
@@ -138,7 +194,7 @@ export function SignUpPage() {
                 <CardFooter className="flex flex-col items-center space-y-2">
                     <p className="text-sm text-muted-foreground">
                         Already have an account?{" "}
-                        <a href="auth/" className="font-medium text-primary hover:underline">
+                        <a href="/auth" className="font-medium text-primary hover:underline">
                             Login
                         </a>
                     </p>

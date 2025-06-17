@@ -60,14 +60,14 @@ const enrolledCourses = [
 
 export default function DashboardPage() {
   const handleGiveFeedback = (courseId: string, courseName: string) => {
-    // In a real app, this would navigate to the feedback form for the course
-    // e.g., router.push(`/feedback/submit/${courseId}`);
+    // In a real app, this would navigate to the feedbacks form for the course
+    // e.g., router.push(`/feedbacks/submit/${courseId}`);
     alert(`Navigate to feedback form for: ${courseName} (ID: ${courseId})`);
   };
 
   const handleViewFeedback = (courseId: string, courseName: string) => {
-    // In a real app, this would navigate to view the submitted feedback
-    // e.g., router.push(`/feedback/view/${courseId}`);
+    // In a real app, this would navigate to view the submitted feedbacks
+    // e.g., router.push(`/feedbacks/view/${courseId}`);
     alert(`Navigate to view feedback for: ${courseName} (ID: ${courseId})`);
   };
 
@@ -88,7 +88,7 @@ export default function DashboardPage() {
                 Welcome, {studentData.fullName}!
               </h1>
               <p className="text-muted-foreground">
-                {"Here's an overview of your courses and feedback status."}
+                {"Here's an overview of your student-courses and feedbacks status."}
               </p>
             </div>
           </div>
@@ -127,6 +127,7 @@ export default function DashboardPage() {
                       </CardContent>
                       <CardFooter>
                         <Button
+                            variant={"outline"}
                             className="w-full"
                             onClick={() => handleGiveFeedback(course.id, course.name)}
                         >
@@ -178,7 +179,7 @@ export default function DashboardPage() {
             </section>
         )}
 
-        {/* Empty State: No courses enrolled */}
+        {/* Empty State: No student-courses enrolled */}
         {enrolledCourses.length === 0 && (
             <div className="mt-10 flex flex-col items-center justify-center text-center">
               <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
@@ -186,7 +187,7 @@ export default function DashboardPage() {
               <p className="text-muted-foreground">
                 It seems you are not enrolled in any courses currently, or there are no courses available for feedback.
               </p>
-              {/* Optional: Link to browse courses or contact support */}
+              {/* Optional: Link to browse student-courses or contact support */}
             </div>
         )}
       </div>

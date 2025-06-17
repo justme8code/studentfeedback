@@ -56,20 +56,14 @@ export function AppLayout({ children }: AppLayoutProps) {
                     <div className="md:hidden">
                         <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
                             <SheetTrigger asChild>
-                                <Button variant="outline" size="icon">
-                                    <Menu className="h-6 w-6" />
-                                    <span className="sr-only">Toggle Navigation</span>
-                                </Button>
+                                <button className="md:hidden absolute top-4 left-4 z-40 rounded-full p-2 bg-white dark:bg-neutral-900 shadow-lg border border-gray-200 dark:border-neutral-800 transition-colors duration-200" aria-label="Open menu">
+                                    <Menu className="w-6 h-6 text-primary dark:text-white" />
+                                </button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="w-64 p-0"> {/* Ensure width matches desktop sidebar */}
-                                {/* Sidebar Header for Mobile Sheet */}
-                                <div className="flex h-16 items-center border-b px-6">
-                                    <Link href="/dashboard" className="text-xl font-bold tracking-tight text-primary" onClick={() => setMobileNavOpen(false)}>
-                                        StudentFeedback
-                                    </Link>
-                                </div>
+                            <SheetContent side="left" className="p-0 w-64">
+                                <div className="h-16 flex items-center border-b px-6 font-bold text-xl text-primary">StudentFeedback</div>
                                 <div className="p-4">
-                                    <SideNav isMobile={true} onLinkClick={() => setMobileNavOpen(false)} />
+                                    <SideNav />
                                 </div>
                             </SheetContent>
                         </Sheet>

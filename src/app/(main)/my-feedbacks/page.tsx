@@ -16,7 +16,7 @@ import { Eye, MessageSquareDashed } from "lucide-react"; // Icons
 import { useRouter } from "next/navigation";
 
 // --- Mock Data ---
-// This would come from an API, filtered for the current user and submitted feedback
+// This would come from an API, filtered for the current user and submitted feedbacks
 const submittedFeedbacks = [
     {
         courseId: "crs202",
@@ -24,7 +24,7 @@ const submittedFeedbacks = [
         courseName: "Calculus II",
         instructor: "Dr. Ada Lovelace",
         dateSubmitted: "2023-11-15",
-        // Potentially a summary or link to the full feedback details
+        // Potentially a summary or link to the full feedbacks details
         feedbackSummary: "Overall a challenging but rewarding course. Instructor was excellent.",
         overallRating: 5, // Example, you might fetch this
     },
@@ -49,7 +49,7 @@ export default function MyFeedbackPage() {
 
     const handleViewDetails = (courseId: string, courseName: string) => {
         // Navigate to the dynamic view page
-        router.push(`/feedback/view/${courseId}`);
+        router.push(`/feedbacks/view/${courseId}`);
     };
 
     return (

@@ -13,64 +13,81 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User, Settings, LifeBuoy } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // For logout
-
-// Mock user data (replace with actual user data from context/session)
-const userData = {
-    email: "alice@example.com",
-    name: "Alice Wonderland",
-    avatarUrl: "https://github.com/shadcn.png",
-    initials: "AW",
-};
+import { logout } from "@/lib/api/calls/auth";
+import {useLoadingStore} from "@/lib/hooks/use-loading-store";
+import {useToast} from "@/lib/hooks/use-toast-store"; // For logout
+import { useUserStore } from "@/lib/hooks/useUserStore";
 
 export function UserNav() {
-    const router = useRouter();
-
-    const handleLogout = () => {
-        // Implement your logout logic here
-        // e.g., clear session, call API, etc.
-        console.log("User logged out");
-        router.push("/login"); // Redirect to login page
+    const { show, hide } = useLoadingStore();
+    const { showSuccessToast, showErrorToast } = useToast();
+    const {user,clearUser} = useUserStore();
+    // Helper for initials
+    const getInitials = (name?: string) => {
+        if (!name) return "U";
+        const parts = name.split(" ");
+        return parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
     };
+
+    const handleLogout = async () => {
+        show("Logging you out..."); // Show the full-page loader
+
+        try {
+            await logout();
+            showSuccessToast("You have been logged out successfully.");
+        } catch (error) {
+            console.error("Logout failed:", error);
+            showErrorToast("Failed to log out. Please try again.");
+        } finally {
+            hide();
+        }
+    };
+
+    // Helper to get the correct route prefix based on user role
+    const getRoutePrefix = () => {
+        if (!user) return "";
+        if (user.role_id === 1) return "/admin";
+        if (user.role_id === 2 || user.role_id === 3) return "";
+        return "";
+    };
+    const routePrefix = getRoutePrefix();
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
-                        <AvatarImage src={userData.avatarUrl} alt={`@${userData.name}`} />
-                        <AvatarFallback>{userData.initials}</AvatarFallback>
+                        {/* You can add user.avatarUrl if you have it */}
+                        <AvatarImage src={undefined} alt={`@${user?.full_name || "User"}`} />
+                        <AvatarFallback>{getInitials(user?.full_name)}</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{userData.name}</p>
+                        <p className="text-sm font-medium leading-none">{user?.full_name || "User"}</p>
                         <p className="text-xs leading-none text-muted-foreground">
-                            {userData.email}
+                            {user?.email || "No email"}
                         </p>
                     </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <Link href="/profile" passHref legacyBehavior>
+                    <Link href={`${routePrefix}/profiles`} passHref legacyBehavior>
                         <DropdownMenuItem>
                             <User className="mr-2 h-4 w-4" />
                             <span>Profile</span>
-                            {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
                         </DropdownMenuItem>
                     </Link>
-                    <Link href="/settings" passHref legacyBehavior>
+                    <Link href={`${routePrefix}/settings`} passHref legacyBehavior>
                         <DropdownMenuItem>
                             <Settings className="mr-2 h-4 w-4" />
                             <span>Settings</span>
-                            {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
                         </DropdownMenuItem>
                     </Link>
                 </DropdownMenuGroup>
@@ -82,10 +99,13 @@ export function UserNav() {
                     </DropdownMenuItem>
                 </Link>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
+                {/* 5. The onClick prop now points to our new async handler */}
+                <DropdownMenuItem onClick={() => {
+                    clearUser();
+                    handleLogout();
+                }}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
-                    {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

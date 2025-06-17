@@ -102,7 +102,7 @@ export default function ViewFeedbackDetailsPage() {
                         setError("Feedback details not found for this course.");
                     }
                 })
-                .catch(() => setError("Failed to fetch feedback details."))
+                .catch(() => setError("Failed to fetch feedbacks details."))
                 .finally(() => setLoading(false));
         }
     }, [courseId]);
@@ -209,11 +209,11 @@ export default function ViewFeedbackDetailsPage() {
 
                 </CardContent>
                 <CardFooter className="flex justify-end">
-                    <Button onClick={() => router.push("/my-feedback")} variant="outline">
+                    <Button onClick={() => router.push("/my-feedbacks")} variant="outline">
                         <ArrowLeft className="mr-2 h-4 w-4"/> Back to My Feedback
                     </Button>
                     {/* Optionally, add an "Edit Feedback" button if functionality exists */}
-                    {/* <Button onClick={() => router.push(`/feedback/edit/${feedback.courseId}`)} className="ml-2">
+                    {/* <Button onClick={() => router.push(`/feedbacks/edit/${feedbacks.courseId}`)} className="ml-2">
             Edit Feedback
           </Button> */}
                 </CardFooter>
