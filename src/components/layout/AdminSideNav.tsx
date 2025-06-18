@@ -47,12 +47,7 @@ const adminNavItems = [
 		label: "Sessions",
 		icon: <Timer className="h-5 w-5" />,
 	},
-
-	{
-		href: "/admin/view-feedback",
-		label: "View Feedback",
-		icon: <MessageSquareText className="h-5 w-5" />,
-	},
+ 
 	{
 		href: "/admin/settings",
 		label: "Settings",

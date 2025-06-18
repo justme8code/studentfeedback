@@ -39,6 +39,12 @@ export function useRoleRedirect() {
         router.replace("/main");
       }
     }
+    else if (role === "lecturer") {
+      // Only redirect if they are NOT already on a main page
+      if (!pathname.startsWith("/lecturers")) {
+        router.replace("/lecturers");
+      }
+    }
     // --- Case 4: Fallback for unknown roles ---
     else {
       // Redirect to auth page if they have an unrecognized role

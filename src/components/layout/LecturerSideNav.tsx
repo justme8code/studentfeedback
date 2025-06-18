@@ -24,16 +24,7 @@ const lecturerNavItems = [
         label: "Questionnaires",
         icon: <ClipboardList className="h-5 w-5" />,
     },
-    {
-        href: "/admin/view-feedback",
-        label: "Feedbacks",
-        icon: <MessageSquareText className="h-5 w-5" />,
-    },
-    {
-        href: "/lecturers/courses",
-        label: "Courses",
-        icon: <NotebookPen className="h-5 w-5" />,
-    },
+
 
     {
         href: "/lecturers/settings",

@@ -6,9 +6,11 @@ import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import {LecturerSideNav} from "@/components/layout/LecturerSideNav";
+import {useRoleRedirect} from "@/lib/hooks/useRoleRedirect";
 
 export default function LecturerLayout({ children }: { children: React.ReactNode }) {
 
+    useRoleRedirect();
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
     return (
         <div className="min-h-screen bg-background">

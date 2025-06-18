@@ -9,6 +9,7 @@ import { Menu } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
 
+    useRoleRedirect();
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
     return (
         <div className="min-h-screen bg-background">

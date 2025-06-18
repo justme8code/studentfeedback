@@ -100,7 +100,7 @@ export function UserNav() {
                 </Link>
                 <DropdownMenuSeparator />
                 {/* 5. The onClick prop now points to our new async handler */}
-                <DropdownMenuItem onClick={() => {
+                <DropdownMenuItem onClick={async () => {
                     clearUser();
                     handleLogout();
                 }}>

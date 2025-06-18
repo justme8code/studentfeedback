@@ -58,13 +58,17 @@ export function LoginPage() {
                 setUser(user);
                 showSuccessToast("Login successful! Welcome back.");
                 if(user.role_id == 1){
-                    router.push("/admin/departments"); // Redirect to the main app page
+                    router.push("/admin"); // Redirect to the main app page
                 }
 
                 if(user.role_id == 2){
-                    router.push("/dashboard"); // Redirect to the main app page
+                    router.push("/lecturers"); // Redirect to the main app page
+
                 }
 
+                if(user.role_id == 3){
+                    router.push("/dashboard"); // Redirect to the main app page
+                }
 
 
             } else {
