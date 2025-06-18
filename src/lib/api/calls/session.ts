@@ -26,3 +26,5 @@ export async function getSessionsByDate(from: string, to: string) {
     });
     return { data, status: status === 200, error };
 }
+
+

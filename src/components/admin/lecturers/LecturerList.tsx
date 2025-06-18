@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Pencil, Trash2, User } from "lucide-react";
 import type { User as UserType } from "@/lib/types/user";
 import { LecturerCourseOfferingsManager } from "@/components/admin/lecturers/LecturerCourseOfferingsManager";
+import {LecturerProfile, StudentProfile} from "@/lib/types";
 
 export function LecturerList() {
   const [lecturers, setLecturers] = useState<UserType[]>([]);
@@ -61,6 +62,10 @@ export function LecturerList() {
     }
   };
 
+  function isLecturerProfile(profile: StudentProfile | LecturerProfile | null): profile is LecturerProfile {
+    return profile !== null && 'department' in profile;
+  }
+
   return (
     <div className="">
       <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
@@ -74,27 +79,44 @@ export function LecturerList() {
             <table className="min-w-full bg-white dark:bg-gray-900 rounded-2xl shadow-lg">
               <thead>
                 <tr className="bg-gray-50 dark:bg-gray-800">
+                  <th className="py-3 px-4 text-left">Id</th>
                   <th className="py-3 px-4 text-left">Name</th>
                   <th className="py-3 px-4 text-left">Email</th>
+                  <th className="py-3 px-4 text-left">Faculty</th>
+                  <th className="py-3 px-4 text-left">Department</th>
                   <th className="py-3 px-4 text-left">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {lecturers&& lecturers.length>0 && lecturers.map((lecturer) => (
                   <tr key={lecturer.id} className="border-b last:border-b-0 border-gray-200 dark:border-gray-700">
+                    <td className="py-2 px-4">{lecturer.id}</td>
                     <td className="py-2 px-4">{lecturer.full_name}</td>
                     <td className="py-2 px-4">{lecturer.email}</td>
-                    <td className="py-2 px-4 flex gap-10">
-                      <Button size="icon" variant="outline" onClick={() => openEditModal(lecturer)} title="Edit">
+
+                    {
+                        isLecturerProfile(lecturer.profile) && (
+                            <td className="py-2 px-4">{lecturer.profile.department.faculty?.name}</td>
+                        )
+                    }
+                    {
+                      isLecturerProfile(lecturer.profile) && (
+                            <td className="py-2 px-4">{lecturer.profile.department.name}</td>
+                        )
+                    }
+
+
+                    <td className="py-2 px-4 flex gap-10 items-center">
+                      <Button size={"sm"} variant="outline" onClick={() => openEditModal(lecturer)} title="Edit">
                         <Pencil className="w-4 h-4" />
                       </Button>
-                      <Button size="icon" variant="destructive" onClick={() => { setDeleteId(lecturer.id!); setModalOpen(true); }} title="Delete">
+                      <Button  size={"sm"} variant="destructive" onClick={() => { setDeleteId(lecturer.id!); setModalOpen(true); }} title="Delete">
                         <Trash2 className="w-4 h-4" />
                       </Button>
                       <Dialog open={offeringsModalOpen && offeringsLecturer?.id === lecturer.id} onOpenChange={open => { setOfferingsModalOpen(open); if (!open) setOfferingsLecturer(null); }}>
                         <DialogTrigger asChild>
-                          <Button size="sm" variant="default" onClick={() => { setOfferingsLecturer(lecturer); setOfferingsModalOpen(true); }}>
-                            Manage Course Offerings
+                          <Button size="default" variant="outline" onClick={() => { setOfferingsLecturer(lecturer); setOfferingsModalOpen(true); }}>
+                            Assigned Courses
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="dark:bg-gray-900 dark:text-gray-100 max-w-2xl">

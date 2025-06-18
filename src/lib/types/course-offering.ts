@@ -4,12 +4,15 @@ import {Lecturer} from "@/lib/types/lecturer";
 
 export interface CourseOffering {
     course_id:string;
-    semester_id:string;
-    lecturer_id:string;
+    course_code:string;
+    course_title:string;
 }
 
-export interface  CourseOfferingWithDetails {
-    course:Course;
-    semester:Semester;
-    lecturer:Lecturer;
+export interface CourseOfferingWithDetails {
+    id: number;
+    course: Course;
+    lecturer: Lecturer;
+    semester: Semester;
+    created_at: string;
+    updated_at: string;
 }

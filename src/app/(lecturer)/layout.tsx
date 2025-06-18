@@ -2,12 +2,12 @@
 
 import { AdminSideNav } from "@/components/layout/AdminSideNav";
 import { UserNav } from "@/components/layout/UserNav";
-import { useRoleRedirect } from "@/lib/hooks/useRoleRedirect";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import {LecturerSideNav} from "@/components/layout/LecturerSideNav";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function LecturerLayout({ children }: { children: React.ReactNode }) {
 
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
     return (
@@ -15,10 +15,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Sidebar for admin - visible on md+ */}
             <aside className="fixed inset-y-0 left-0 z-30 w-64 flex-col border-r bg-card hidden md:flex">
                 <div className="flex h-16 items-center border-b px-6">
-                    <span className="text-xl font-bold tracking-tight text-primary">Admin Panel</span>
+                    <span className="text-xl font-bold tracking-tight text-primary">Lecturer</span>
                 </div>
                 <div className="flex-1 overflow-y-auto p-4">
-                    <AdminSideNav />
+                    <LecturerSideNav/>
                 </div>
             </aside>
             {/* Mobile nav trigger and drawer */}
@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <SheetContent side="left" className="p-0 w-64">
                     <div className="h-16 flex items-center border-b px-6 font-bold text-xl text-primary">Admin Panel</div>
                     <div className="p-4">
-                        <AdminSideNav />
+                        <LecturerSideNav />
                     </div>
                 </SheetContent>
             </Sheet>

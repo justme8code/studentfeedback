@@ -60,7 +60,7 @@ export const changePasswordFormSchema = z.object({
 
 
 // Define the validation schema(for sign up)
-export const signUpFormSchema = z.object({
+export const baseSignUpSchema = z.object({
     fullName: z.string().min(2, {
         message: "Full name must be at least 2 characters.",
     }),
@@ -73,11 +73,14 @@ export const signUpFormSchema = z.object({
     // You could add confirmPassword here if needed:
     confirmPassword: z.string().min(4),
 })
-    .refine((data) => data.password === data.confirmPassword, { // If using confirmPassword
-        message: "Passwords don't match",
-        path: ["confirmPassword"], // path of error
-    });
 
+export const lecturerFormSchema = baseSignUpSchema.extend({
+    facultyId: z.string({ required_error: "Please select a faculty." }).min(1, "Please select a faculty."),
+    departmentId: z.string({ required_error: "Please select a department." }).min(1, "Please select a department."),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+});
 
 // Define the validation schema
 export const loginFormSchema = z.object({
@@ -101,6 +104,26 @@ export const departmentFormSchema = z.object({
 });
 
 
+export const questionBuilderSchema = z.object({
+    id: z.string().optional(), // Internal ID from useFieldArray
+    question_text: z.string().min(10, { message: "Question text must be at least 10 characters." }),
+    question_type: z.enum(['rating', 'slider', 'text']),
+    // Corrected to 'criteria_id' and stored as a string from the Select component
+    criteria_id: z.string().min(1, { message: "Please select a criterion." }),
+});
+
+// Schema for the entire questionnaire form
+export const questionnaireBuilderSchema = z.object({
+    title: z.string().min(5, { message: "Title must be at least 5 characters long." }),
+    // New top-level fields
+    course_offering_id: z.string().min(1, { message: "Please select a course offering." }),
+    feedback_round: z.coerce.number().min(1, { message: "Please select a feedback round." }),
+    status: z.enum(['inactive', 'active'], { required_error: "Please select an initial status." }),
+    // Ensure at least one question is added
+    questions: z.array(questionBuilderSchema).min(1, { message: "Please add at least one question." }),
+});
+
+export type QuestionnaireBuilderData = z.infer<typeof questionnaireBuilderSchema>;
 export type UpdateProfileFormData = z.infer<typeof updateProfileFormSchema>;
 export type ChangePasswordFormData = z.infer<typeof changePasswordFormSchema>;
 export type FeedbackFormData = z.infer<typeof feedbackFormSchema>;

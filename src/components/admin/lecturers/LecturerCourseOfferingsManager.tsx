@@ -1,6 +1,10 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import { getAllCourseOfferingsByLecturerId, createCourseOfferings } from "@/lib/api/calls/course-offerings";
+import {
+    getAllCourseOfferingsByLecturerId,
+    createCourseOfferings,
+    unAssignCourseByIds
+} from "@/lib/api/calls/course-offerings";
 import { getAllCourses } from "@/lib/api/calls/course";
 import { getCurrentSession } from "@/lib/api/calls/session";
 
@@ -11,13 +15,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, CheckCircle2, BookOpen } from "lucide-react";
+import {AlertTriangle, CheckCircle2, BookOpen, Minus, Delete, MinusCircle} from "lucide-react";
 import {CourseOfferingWithDetails} from "@/lib/types/course-offering";
 import {Course} from "@/lib/types";
 import {Semester} from "@/lib/types/semester";
 import {Lecturer} from "@/lib/types/lecturer";
-
-// --- The logic inside the component remains the same ---
 
 export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer: Lecturer , onClose: () => void }) {
     const [offerings, setOfferings] = useState<CourseOfferingWithDetails[]>([]);
@@ -33,7 +35,7 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
         Promise.all([
             getAllCourseOfferingsByLecturerId(lecturer.id),
             getAllCourses(),
-            getCurrentSession()
+            getCurrentSession(),
         ]).then(([offeringsRes, coursesRes, semestersRes]) => {
             if (offeringsRes.status && offeringsRes.data) setOfferings(offeringsRes.data);
             if (coursesRes.status && coursesRes.data) setCourses(coursesRes.data);
@@ -52,7 +54,21 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
         }
         const res = await createCourseOfferings(lecturer.id, form.course_id, form.semester_id);
         if (res.status) {
-            setSuccess("Assign Course successful");
+            setSuccess(
+                res.successData?.length > 0
+                    ? res.duplicatesData?.length > 0
+                        // Case: Successes AND Duplicates
+                        ? `${res.successData.length} assigned successfully, ${res.duplicatesData.length} duplicates found.`
+                        // Case: Successes but NO Duplicates
+                        : 'All courses assigned successfully.'
+                    : res.duplicatesData?.length > 0
+                        // Case: NO Successes but Duplicates exist
+                        ? 'Some courses were duplicates and not assigned.'
+                        // Case: NO Successes and NO Duplicates
+                        : 'No courses assigned.'
+            );
+            setTimeout(() => setSuccess(""), 1500);
+
             const offeringsRes = await getAllCourseOfferingsByLecturerId(lecturer.id);
             if (offeringsRes.status && offeringsRes.data) setOfferings(offeringsRes.data);
             setForm({ course_id: "", semester_id: "" });
@@ -61,8 +77,13 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
         }
     };
 
+    //
+    //  Get the IDs of courses that are already assigned to this lecturer.
+    const assignedCourseIds = new Set(offerings.map(off => off.course.id));
 
-    // --- The UI is rendered below with improved components ---
+    // Filter the main 'courses' list to create a new list of only available courses.
+    const availableCourses = courses.filter(course => !assignedCourseIds.has(course.id));
+
 
     return (
         <div className="w-full">
@@ -84,15 +105,29 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
                 ) : (
                     <>
                         <h3 className="text-lg font-semibold mb-3">Current Assignments</h3>
-                        <div className="space-y-3 mb-6">
+                        <div className="space-y-3 mb-6 overflow-scroll max-h-96 border rounded-lg p-3">
                             {offerings.length > 0 ? (
-                                offerings.map((off,index) => (
-                                    <div key={index} className="border rounded-lg p-3 flex items-center justify-between">
+                                offerings.map((off) => (
+                                    <div key={off.id} className="border rounded-lg p-3 flex items-center justify-between">
                                         <div>
                                             <p className="font-medium">{off.course.course_title} ({off.course.course_code})</p>
                                             <p className="text-sm text-muted-foreground">Semester: {off.semester.name}</p>
                                         </div>
-                                        <BookOpen className="h-5 w-5 text-muted-foreground" />
+
+                                        <Button variant={"outline"} onClick={() => {
+                                            unAssignCourseByIds([off.id])
+                                                .then(value => {
+                                                    if (value.status) {
+                                                        setOfferings(prev => prev.filter(o => o.id !== off.id));
+                                                        setSuccess("Course unassigned successfully");
+                                                    } else {
+                                                        setError(value.error?.message || "Failed to unassign course");
+                                                    }
+                                                })
+                                        }}>
+                                            <MinusCircle className="h-5 w-5 text-muted-foreground" />
+                                            Unassign
+                                        </Button>
                                     </div>
                                 ))
                             ) : (
@@ -119,7 +154,8 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
                                                 <SelectValue placeholder="Select a course..." />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {courses.map((c: Course) => (
+                                                {/* 3. Use the new 'availableCourses' list for the dropdown options */}
+                                                {availableCourses.map((c: Course) => (
                                                     <SelectItem key={c.id} value={String(c.id)}>
                                                         {c.course_title} ({c.course_code})
                                                     </SelectItem>
@@ -151,7 +187,6 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
 
 
                                 <div className="flex gap-5 justify-end items-center">
-                                    {/*  THIS IS THE FIX  */}
                                     <Button type="button" variant="outline" onClick={onClose}>
                                         close
                                     </Button>
@@ -169,11 +204,14 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
                             </Alert>
                         )}
                         {success && (
-                            <Alert variant="default" className="mt-4 border-green-500 text-green-700 dark:border-green-600 dark:text-green-400">
+
+                            <div className={"inset-x-0.5 inset-y-0.5  absolute p-4"}>
+                            <Alert variant="default" className="mt-4  border-green-500 text-green-700 dark:border-green-600 dark:text-green-400">
                                 <CheckCircle2 className="h-4 w-4 text-green-500" />
                                 <AlertTitle>Success</AlertTitle>
                                 <AlertDescription>{success}</AlertDescription>
                             </Alert>
+                            </div>
                         )}
                     </>
                 )}

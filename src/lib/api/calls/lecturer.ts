@@ -2,13 +2,15 @@
 import {makeAuthRequest} from "@/lib/api/session";
 import type { User } from "@/lib/types/user";
 import {myRequest} from "@/lib/api/axios";
+import {Questionnaire} from "@/lib/types/questionnaire";
 
 
 export async function createLecturer(values: {
   fullName: string
   email: string
   password: string
-  confirmPassword: string
+  department_id:number
+  faculty_id:number
 }) {
 
   const {data,status,error} = await makeAuthRequest<{
@@ -20,7 +22,7 @@ export async function createLecturer(values: {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     url: `/users/lecturers`,
-    data:{full_name:values.fullName,email:values.email,password:values.password}
+    data:{full_name:values.fullName,email:values.email,password:values.password,faculty_id:values.faculty_id,department_id:values.department_id}
   })
 
   if (data && status === 201) {
@@ -33,10 +35,15 @@ export async function createLecturer(values: {
 
 
 export async function fetchAllLecturers() {
-  return makeAuthRequest<null, User[]>({
+  const {data,status} = await makeAuthRequest<null, {data:User[]}>({
     method: "GET",
     url: "/users/lecturers"
   });
+    if (data && status === 200) {
+        return {data:data.data,status:status};
+    } else {
+        return { error: "Failed to fetch lecturers" };
+    }
 }
 
 export async function deleteLecturer(id: string) {
@@ -52,5 +59,18 @@ export async function updateLecturer(id: string, data: Partial<User>) {
     url: `/users/${id}`,
     data
   });
+}
+
+export async function getLecturerQuestionnaires(lecturerId: string) {
+  const {data, status, error} = await makeAuthRequest<null, {data: Questionnaire[]}>({
+    method: "GET",
+    url: `/lecturers/${lecturerId}/questionnaires`
+  });
+
+  if (data && status === 200) {
+    return {data:data.data,status:status};
+  } else {
+    return { error: error.message || "Failed to fetch lecturer questionnaires" };
+  }
 }
 

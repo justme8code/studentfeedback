@@ -1,3 +1,5 @@
+import {Department} from "@/lib/types/department";
+
 export interface StudentProfile {
     user_id: string;
     matric_number: string;
@@ -8,7 +10,6 @@ export interface StudentProfile {
 
 export interface LecturerProfile {
     user_id: string;
-    department_id: string;
-    faculty_id: string;
+    department:Department;
 }
 

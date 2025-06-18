@@ -23,7 +23,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { signUpFormSchema } from "@/lib/schema";
+import { baseSignUpSchema } from "@/lib/schema";
 import { signUp } from "@/lib/api/calls/auth";
 import {useLoadingStore} from "@/lib/hooks/use-loading-store";
 import {useToast} from "@/lib/hooks/use-toast-store";
@@ -42,8 +42,8 @@ export function SignUpPage() {
     const { setUser } = useUserStore();
 
 
-    const form = useForm<z.infer<typeof signUpFormSchema>>({
-        resolver: zodResolver(signUpFormSchema),
+    const form = useForm<z.infer<typeof baseSignUpSchema>>({
+        resolver: zodResolver(baseSignUpSchema),
         defaultValues: {
             fullName: "",
             email: "",
@@ -74,7 +74,7 @@ export function SignUpPage() {
     };
 
 
-    async function onSubmit(values: z.infer<typeof signUpFormSchema>) {
+    async function onSubmit(values: z.infer<typeof baseSignUpSchema>) {
         show("Creating your account...");
 
         try {
