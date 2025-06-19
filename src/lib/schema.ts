@@ -1,4 +1,6 @@
 import * as z from "zod";
+import {CourseOffering, CourseOfferingWithDetails} from "@/lib/types/course-offering";
+import {Criterion} from "@/lib/types/criterion";
 
 export const feedbackFormSchema = z.object({
     courseId: z.string().min(1, "Course ID is required"), // Hidden field, but important
@@ -74,6 +76,19 @@ export const baseSignUpSchema = z.object({
     confirmPassword: z.string().min(4),
 })
 
+export const studentFormSchema = baseSignUpSchema.extend({
+    facultyId: z.string({ required_error: "Please select a faculty." }).min(1, "Please select a faculty."),
+    departmentId: z.string({ required_error: "Please select a department." }).min(1, "Please select a department."),
+
+    // NEW: Added matric number field
+    matricNumber: z.string({ required_error: "Matric number is required." })
+        .min(1, "Matric number is required."),
+
+    // NEW: Added level field, which will be converted to a number
+    level: z.coerce.number({ required_error: "Please select your level." })
+        .min(100, "Please select your level."),
+
+})
 export const lecturerFormSchema = baseSignUpSchema.extend({
     facultyId: z.string({ required_error: "Please select a faculty." }).min(1, "Please select a faculty."),
     departmentId: z.string({ required_error: "Please select a department." }).min(1, "Please select a department."),
@@ -122,6 +137,103 @@ export const questionnaireBuilderSchema = z.object({
     // Ensure at least one question is added
     questions: z.array(questionBuilderSchema).min(1, { message: "Please add at least one question." }),
 });
+
+
+
+
+// Defines the shape of a single question from your API
+export type QuestionnaireQuestion = {
+    id: number;
+    question_text: string;
+    question_type: "rating" | "slider" | "text"; // Constrain to known types
+    order: number;
+    criterion:Criterion;
+};
+
+// Defines the shape of the entire questionnaire object from your API
+export type Questionnaire2 = {
+    id: number;
+    title: string;
+    status: "active" | "inactive" | "draft"; // Constrain to known statuses
+    course_offering:CourseOfferingWithDetails
+    questions: QuestionnaireQuestion[];
+    // You can add other fields like 'course_offering' if needed by the form
+};
+
+
+export type FeedbackAnswer = {
+    id: number;
+    answer_value: number | null;
+    answer_text: string | null;
+    submitted_at: string;
+};
+
+export type PaginationInfo = {
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+};
+
+export type PaginatedFeedbackResponse = {
+    data: FeedbackAnswer[];
+    pagination: PaginationInfo;
+};
+
+
+
+// --- Dynamic Zod Schema Generation ---
+
+// This is the function you provided, slightly adapted for our new types.
+// It creates a schema for an *array* of answers.
+const createAnswerArraySchema = (questions: QuestionnaireQuestion[]) => {
+    return z.array(
+        z.object({
+            question_id: z.number(),
+            // We'll make both optional here and let the refine logic handle what's required.
+            answer_text: z.string().optional(),
+            answer_value: z.number().optional(),
+        }).refine((data) => {
+            const question = questions.find(q => q.id === data.question_id);
+            if (!question) return false; // Question doesn't exist
+
+            const { question_type } = question;
+
+            // Logic for "text" type questions
+            if (question_type === "text") {
+                // Must be a non-empty string
+                return typeof data.answer_text === "string" && data.answer_text.trim().length > 0;
+            }
+
+            // Logic for "slider" and "rating" types
+            if (question_type === "slider") {
+                return typeof data.answer_value === "number" && data.answer_value >= 1 && data.answer_value <= 100;
+            }
+
+            if (question_type === "rating") {
+                return typeof data.answer_value === "number" && data.answer_value >= 1 && data.answer_value <= 5;
+            }
+
+            return false; // Fails if type is unknown or conditions aren't met
+        }, {
+            // This is a generic message. We can improve it later if needed.
+            message: "Invalid answer provided for the question type.",
+        })
+    );
+};
+
+
+// This creates the schema for the *entire form*
+export const createDynamicFeedbackFormSchema = (questions: QuestionnaireQuestion[]) => {
+    return z.object({
+        questionnaire_id: z.number(),
+        // The form data will have a nested 'answers' array
+        answers: createAnswerArraySchema(questions),
+    });
+}
+
+// Inferred TypeScript type for our form data
+export type DynamicFeedbackFormData = z.infer<ReturnType<typeof createDynamicFeedbackFormSchema>>;
 
 export type QuestionnaireBuilderData = z.infer<typeof questionnaireBuilderSchema>;
 export type UpdateProfileFormData = z.infer<typeof updateProfileFormSchema>;

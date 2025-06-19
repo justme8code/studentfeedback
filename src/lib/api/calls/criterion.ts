@@ -1,9 +1,9 @@
 'use server';
 import {makeAuthRequest} from "@/lib/api/session";
-import {Criteria} from "@/lib/types/criteria";
+import {Criterion} from "@/lib/types/criterion";
 
 export async function getCriteria() {
-    const {data, status, error} = await makeAuthRequest<null, Criteria[]>({
+    const {data, status, error} = await makeAuthRequest<null, Criterion[]>({
         method: "GET",
         url: `/criteria`
     });

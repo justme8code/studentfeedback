@@ -20,7 +20,7 @@ const navItems = [
         label: "Dashboard",
         icon: <LayoutDashboard className="h-5 w-5" />,
     },
-    {
+   /* {
         href: "/student-courses",
         label: "Courses",
         icon: <BookMarked className="h-5 w-5" />,
@@ -29,7 +29,7 @@ const navItems = [
         href: "/my-feedbacks",
         label: "My Feedback",
         icon: <MessageSquareText className="h-5 w-5" />,
-    },
+    },*/
     // You can add more sections like Profile/Settings directly here if desired
     // Or keep them in UserNav dropdown for a cleaner sidebar
     {

@@ -82,12 +82,41 @@ export default function CoursesPage() {
   return (
     <div className="w-full max-w-7xl mx-auto p-4">
       <div className={"flex justify-between items-center "}>
-        <h1 className="text-2xl font-bold mb-6">Courses</h1>
+        <h1 className="text-2xl font-bold mb-6">Department Courses</h1>
+      </div>
 
-        <div className="mb-6 flex justify-end">
+
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 ite">
+        {/* Search + Filter */}
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <input
+              type="text"
+              placeholder="Search by course title or code..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border rounded-md px-4 py-2 w-full sm:w-80 dark:bg-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          <select
+              value={levelFilter}
+              onChange={(e) => setLevelFilter(e.target.value)}
+              className="border rounded-md px-4 py-2 w-full sm:w-40 dark:bg-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="">All Levels</option>
+            {allLevels.map((level) => (
+                <option key={level as string} value={level as string}>
+                  {level}
+                </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Add Course Button & Dialog */}
+        <div className="flex justify-end">
           <Dialog open={addModalOpen} onOpenChange={setAddModalOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => setAddModalOpen(true)} variant="default">Add Course</Button>
+              <Button onClick={() => setAddModalOpen(true)} variant="default">
+                Add Course
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -97,29 +126,34 @@ export default function CoursesPage() {
                 <Input
                     placeholder="Course Title"
                     value={addForm.course_title}
-                    onChange={e => setAddForm(f => ({ ...f, course_title: e.target.value }))}
+                    onChange={(e) => setAddForm((f) => ({ ...f, course_title: e.target.value }))}
                     required
                 />
                 <Input
                     placeholder="Course Code"
                     value={addForm.course_code}
-                    onChange={e => setAddForm(f => ({ ...f, course_code: e.target.value }))}
+                    onChange={(e) => setAddForm((f) => ({ ...f, course_code: e.target.value }))}
                     required
                 />
                 <Input
                     placeholder="Level"
                     value={addForm.level}
-                    onChange={e => setAddForm(f => ({ ...f, level: e.target.value }))}
+                    onChange={(e) => setAddForm((f) => ({ ...f, level: e.target.value }))}
                     required
                 />
 
-                {addError && <div className="text-red-500 mb-2">{addError}</div>}
-                {addSuccess && <div className="text-green-600 mb-2">{addSuccess}</div>}
+                {addError && <div className="text-red-500">{addError}</div>}
+                {addSuccess && <div className="text-green-600">{addSuccess}</div>}
+
                 <DialogFooter>
                   <DialogClose asChild>
-                    <Button type="button" variant="outline">Cancel</Button>
+                    <Button type="button" variant="outline">
+                      Cancel
+                    </Button>
                   </DialogClose>
-                  <Button type="submit" disabled={addLoading}>{addLoading ? "Adding..." : "Add Course"}</Button>
+                  <Button type="submit" disabled={addLoading}>
+                    {addLoading ? "Adding..." : "Add Course"}
+                  </Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -127,26 +161,6 @@ export default function CoursesPage() {
         </div>
       </div>
 
-
-      <div className="flex flex-col md:flex-row gap-2 mb-6">
-        <input
-          type="text"
-          placeholder="Search by course title or code..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="border rounded px-3 py-2 w-full md:w-1/2 dark:bg-gray-900 dark:text-gray-100"
-        />
-        <select
-          value={levelFilter}
-          onChange={e => setLevelFilter(e.target.value)}
-          className="border rounded px-3 py-2 w-full md:w-40 dark:bg-gray-900 dark:text-gray-100"
-        >
-          <option value="">All Levels</option>
-          {allLevels.map((level) => (
-            <option key={level as string} value={level as string}>{level}</option>
-          ))}
-        </select>
-      </div>
       {loading ? (
         <div>Loading...</div>
       ) : error ? (

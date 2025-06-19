@@ -1,6 +1,7 @@
 'use server';
 import { makeAuthRequest } from "@/lib/api/session";
 import {Course} from "@/lib/types";
+import {PaginatedData} from "@/lib/types/paginated";
 
 export async function createCourse(course: Partial<Course>) {
     const { data, status, error } = await makeAuthRequest<Partial<Course>, Course>({
@@ -35,4 +36,12 @@ export async function updateCourse(id: string, data: Partial<Course>) {
         data,
     });
     return { data: res.data, status: res.status === 200, error: res.error };
+}
+
+export async function getStudentCourse(id: number) {
+    const {data,status,error} = await makeAuthRequest<null, PaginatedData<Course>>({
+        method: "GET",
+        url: `/users/students/${id}/courses`
+    });
+    return { data: data?.data, status: status === 200, error: error.message};
 }

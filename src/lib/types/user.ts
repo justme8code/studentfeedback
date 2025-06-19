@@ -1,7 +1,7 @@
 import {LecturerProfile, StudentProfile} from "@/lib/types/profile";
 
 export interface User {
-    id?: string;
+    id?: number;
     full_name: string;
     email: string;
     role_id: number;

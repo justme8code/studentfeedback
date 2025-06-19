@@ -81,6 +81,7 @@ export default function CoursesPage() {
 
   return (
     <div className="w-full max-w-7xl mx-auto p-4">
+
       <div className={"flex justify-between items-center "}>
         <h1 className="text-2xl font-bold mb-6">Courses</h1>
 

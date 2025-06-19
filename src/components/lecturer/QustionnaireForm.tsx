@@ -17,14 +17,13 @@ import {QuestionnaireDetailsForm} from "@/components/lecturer/question-details-f
 import {QuestionList} from "@/components/lecturer/question-list";
 import {AddQuestionControls} from "@/components/lecturer/add-question-control";
 import {useToast} from "@/lib/hooks/use-toast-store";
-import {Questionnaire, QuestionnaireCreatePayload} from "@/lib/types/questionnaire";
+import {QuestionnaireCreatePayload} from "@/lib/types/questionnaire";
 
 interface QuestionnaireFormProps {
     onFinished: () => void;
 }
 
 export function QuestionnaireForm({ onFinished }: QuestionnaireFormProps) {
-    // NEW: State for managing submission status and errors
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const {showSuccessToast,showErrorToast} = useToast();
@@ -36,12 +35,10 @@ export function QuestionnaireForm({ onFinished }: QuestionnaireFormProps) {
 
     const { fields, append, remove } = useFieldArray({ control: form.control, name: "questions" });
 
-    // UPDATED: This function will now build the payload and call your API
     async function onSubmit(data: QuestionnaireBuilderData) {
         setIsSubmitting(true);
         setErrorMessage(null);
 
-        // 1. Build the payload to match your API's expectations
         const apiPayload: QuestionnaireCreatePayload = {
             title: data.title,
             course_offering_id: parseInt(data.course_offering_id, 10),
@@ -57,25 +54,25 @@ export function QuestionnaireForm({ onFinished }: QuestionnaireFormProps) {
 
 
         try {
-            // 2. Call the API
+
             const result
                 = await createQuestionnaire(apiPayload);
 
             if (result.error) {
-                // Handle API error
+
                 showErrorToast(result.error || "Failed to create questionnaire.");
             }
 
-            // 3. Handle Success
+
             showSuccessToast("Questionnaire created successfully!");
             onFinished(); // Close the modal
 
         } catch (error) {
-            // 4. Handle Unexpected Errors
+
             const message = error instanceof Error ? error.message : "An unknown error occurred during submission.";
             showErrorToast(message);
         } finally {
-            // 5. Reset loading state
+
             setIsSubmitting(false);
         }
     }
@@ -90,7 +87,6 @@ export function QuestionnaireForm({ onFinished }: QuestionnaireFormProps) {
                     <AddQuestionControls append={append} />
                 </div>
 
-                {/* NEW: Display API error message if it exists */}
                 {errorMessage && (
                     <Alert variant="destructive">
                         <AlertCircle className="h-4 w-4" />

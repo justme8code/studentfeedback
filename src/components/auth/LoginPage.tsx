@@ -87,9 +87,14 @@ export function LoginPage() {
 
     return (
         // The FullPageLoader is managed globally by the layout, so we don't need it here.
-        <div className="flex min-h-screen items-center justify-center bg-background p-4">
+        <div className="flex min-h-screen items-center justify-center  p-4">
             <Card className="w-full max-w-sm">
                 <CardHeader>
+                    <img
+                        src="https://www.calebuniversity.edu.ng/caleb_uploads/2024/03/cropped-caleb-logoooonnnttt-180x180.png"
+                        alt="Caleb Logo"
+                        className="w-24 h-24 rounded-full bg-white p-2 mb-6"
+                    />
                     <CardTitle className="text-2xl font-bold">Login</CardTitle>
                     <CardDescription>
                         Enter your email below to login to your account.

@@ -7,9 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import {
     LayoutDashboard,
     Settings,
-    NotebookPen,
-
-    ClipboardList, MessageSquareText,
+    ClipboardList,
 } from "lucide-react";
 
 const lecturerNavItems = [

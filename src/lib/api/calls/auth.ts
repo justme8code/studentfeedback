@@ -38,33 +38,31 @@ export async function login(values: {
 
 
 export async function signUp(values: {
-    fullName: string
+    full_name: string
     email: string
     password: string
-    confirmPassword: string
+    level: number
+    matric_number: string
+    department_id: number
+    faculty_id: number
 }) {
 
-    const {data,status,error} = await myRequest<{
+    const {status,error} = await myRequest< {
         full_name: string
         email: string
         password: string
-        role_id:number;
-        confirmPassword?: string
+        level: number
+        matric_number: string
+        department_id: number
+        faculty_id: number
     },AuthResponse>({
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        url: `/auth/register`,
-        data:{full_name:values.fullName,email:values.email,password:values.password,role_id:2}
+        url: `/auth/students`,
+        data:values
     })
 
-    const res = data;
-    if (res && res.success && res.data && res.data.token && status === 200) {
-        await createSession(res.data.token);
-
-        return {user:res.data.user,new_user:true,message:data.message,status:status}
-    }else{
-        return { error:error.message };
-    }
+    return {status:status === 201,error:error.message}
 }
 
 

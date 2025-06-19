@@ -13,13 +13,13 @@ import {Slider} from "@/components/ui/slider";
 import {Badge} from "@/components/ui/badge";
 import {Star, SlidersHorizontal, MessageSquare, Trash2, HelpCircle} from "lucide-react";
 import {QuestionnaireBuilderData} from "@/lib/schema";
-import {Criteria} from "@/lib/types/criteria";
+import {Criterion} from "@/lib/types/criterion";
 
 interface QuestionCardProps {
     index: number,
     form: UseFormReturn<QuestionnaireBuilderData>,
     remove: (index: number) => void,
-    criteria?: Criteria[]
+    criteria?: Criterion[]
 }
 
 export function QuestionCard({index, form, remove, criteria}: QuestionCardProps) {

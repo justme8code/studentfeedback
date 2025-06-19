@@ -8,7 +8,7 @@ import { getAllCourseOfferingsByLecturerId } from "@/lib/api/calls/course-offeri
 import {CourseOfferingWithDetails} from "@/lib/types/course-offering";
 import {CourseOfferingSkeleton} from "@/components/lecturer/CourseOfferingSkeleton";
 import {CourseOfferingCard} from "@/components/lecturer/course-offering-card";
-import {Criteria} from "@/lib/types/criteria";
+import {Criterion} from "@/lib/types/criterion";
 import {getCriteria} from "@/lib/api/calls/criterion";
 
 export default function DashboardPage() {

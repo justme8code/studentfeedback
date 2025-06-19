@@ -2,6 +2,8 @@
 
 // These types represent what you SEND to the API
 import {CourseOffering} from "@/lib/types/course-offering";
+import {Course} from "@/lib/types/course";
+import {Lecturer} from "@/lib/types/lecturer";
 
 export interface QuestionCreatePayload {
     question_text: string;
@@ -25,17 +27,28 @@ export interface Question {
     order: number;
     question_text?: string;
     question_type: 'text' | 'slider' | 'rating';
-    criteria_id: number;
-    created_at: string;
+    criteria_id?: number;
+    created_at?: string;
 }
 
 export interface Questionnaire {
     id: number;
     title: string;
-    status: 'active' | 'inactive' | 'draft';
+    status: 'active' | 'inactive';
     course_offering:CourseOffering;
     questions?: Question[];
     created_at: string;
     feedback_round: number;
     feedback_count:number;
 }
+
+export interface ResponseQuestionnaire {
+    questionnaire_id: number;
+    title: string;
+    status: 'active' | 'inactive';
+    course_offering: CourseOffering;
+    course:Course;
+    lecturer:Lecturer
+
+}
+

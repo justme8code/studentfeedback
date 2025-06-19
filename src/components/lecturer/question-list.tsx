@@ -6,7 +6,7 @@ import { UseFormReturn, useFieldArray, FieldArrayWithId } from "react-hook-form"
 import { QuestionnaireBuilderData } from "@/lib/schema";
 import { QuestionCard } from "./question-card";
 import {useEffect, useState} from "react";
-import {Criteria} from "@/lib/types/criteria";
+import {Criterion} from "@/lib/types/criterion";
 import {getCriteria} from "@/lib/api/calls/criterion";
 import {useUserStore} from "@/lib/hooks/useUserStore";
 
@@ -19,7 +19,7 @@ interface QuestionListProps {
 
 export function QuestionList({ form, fields, remove }: QuestionListProps) {
     // REMOVED: The useFieldArray hook is gone from here.
-    const [criteria, setCriteria] = useState<Criteria[]>([]);
+    const [criteria, setCriteria] = useState<Criterion[]>([]);
     const {user} = useUserStore();
 
     useEffect(() => {

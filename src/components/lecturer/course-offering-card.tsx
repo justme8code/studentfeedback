@@ -11,23 +11,26 @@ interface CourseOfferingCardProps {
 
 export function CourseOfferingCard({ offering }: CourseOfferingCardProps) {
     return (
-        <Card>
-            <CardHeader>
+        <Card className="max-w-xl w-full mx-auto mb-4 shadow-sm hover:shadow-md transition-shadow rounded-2xl border border-border bg-background">
+            <CardHeader className="pb-2">
                 <div className="flex items-start justify-between">
-                    <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                        <BookOpen className="h-5 w-5 text-primary" />
+                    <CardTitle className="text-base font-semibold flex items-center gap-2">
+                        <BookOpen className="h-4 w-4 text-primary" />
                         {offering.course.course_code}
                     </CardTitle>
-                    <Badge variant="secondary">{`Level ${offering.course.level}`}</Badge>
+                    <Badge variant="secondary" className="text-xs">{`Level ${offering.course.level}`}</Badge>
                 </div>
-                <CardDescription>{offering.course.course_title}</CardDescription>
+                <CardDescription className="text-sm text-muted-foreground mt-1">
+                    {offering.course.course_title}
+                </CardDescription>
             </CardHeader>
-            <CardContent>
-                <div className="flex items-center text-sm text-muted-foreground">
+            <CardContent className="pt-0 text-sm">
+                <div className="flex items-center text-muted-foreground">
                     <Calendar className="h-4 w-4 mr-2" />
                     <span>{offering.semester.name}</span>
                 </div>
             </CardContent>
         </Card>
+
     );
 }

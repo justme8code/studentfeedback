@@ -1,6 +1,7 @@
 'use server';
 import {makeAuthRequest} from "@/lib/api/session";
 import {Faculty} from "@/lib/types";
+import {myRequest} from "@/lib/api/axios";
 
 export async function fetchAllFaculties() {
     const {data, status, error} = await makeAuthRequest<null, Faculty[]>({
@@ -31,7 +32,7 @@ export async function deleteFaculty(id: string) {
 }
 
 export async function getFacultiesWithDepartments() {
-    const {data, status, error} = await makeAuthRequest<null, Faculty[]>({
+    const {data, status, error} = await myRequest<null, Faculty[]>({
         method: "GET",
         url: `/faculties/with-departments`
     });

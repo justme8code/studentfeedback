@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
 
     // Define protected routes that require authentication
     const protectedRoutes = [
-        /^\/$/,                   // Protects home (/)
+                         // Protects home (/)
         /^\/student-courses$/,
         /^\/dashboard$/,
         /^\/feedbacks$/,
@@ -49,5 +49,5 @@ export async function middleware(request: NextRequest) {
 
 // Apply middleware to relevant routes
 export const config = {
-    matcher: ['/','/auth/:path*','/student-courses/:path*','/dashboard/:path*','/feedbacks/:path*','/my-feedbacks/:path*','/profiles/:path*','/settings/:path*','/admin/:path*'],
+    matcher: ['/auth/:path*','/student-courses/:path*','/dashboard/:path*','/feedbacks/:path*','/my-feedbacks/:path*','/profiles/:path*','/settings/:path*','/admin/:path*'],
 };
