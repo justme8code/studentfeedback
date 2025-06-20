@@ -5,7 +5,7 @@ import {
     DashboarOverview,
     LecturerCoursePerformance,
     LecturerDashboardOverview,
-    LecturerPerformance
+    LecturerPerformance, RecentFeedback
 } from "@/lib/types/kpi";
 
 export async function fetchDashBoardOverview() {
@@ -39,6 +39,16 @@ export async function fetchLecturerCoursesPerformanceBySession(lecturerId:string
     const { data, status, error } = await makeAuthRequest<null,LecturerCoursePerformance[]>({
         method: "GET",
         url: `/kpis/lecturers/${lecturerId}/lecturers-courses-by-session/${sessionId}`,
+    });
+
+    return { data, status: status === 200, error };
+}
+
+
+export async function  fetchRecentFeedbacks(lecturerId:string) {
+    const { data, status, error } = await makeAuthRequest<null,RecentFeedback[]>({
+        method: "GET",
+        url: `/kpis/lecturers/${lecturerId}/recent-feedbacks`,
     });
 
     return { data, status: status === 200, error };

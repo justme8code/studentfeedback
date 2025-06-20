@@ -4,13 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { BookOpen, Users, Star, TrendingUp, MessageSquare } from "lucide-react";
 
 // --- Assuming these are in the correct path ---
-import FeedbackDistributionChart from "../../../../../schoolfeedback/src/components/charts/FeedbackDistributionChart";
-import RatingTrendsChart from "../../../../../schoolfeedback/src/components/charts/RatingTrendsChart";
+
 import {useUserStore} from "@/lib/hooks/useUserStore";
 import {useToast} from "@/lib/hooks/use-toast-store";
 import { useLecturerDashboardOverviewQuery } from "@/lib/hooks/kpi/useLecturerDashboardOverview";
 import {useActiveSession} from "@/lib/hooks/kpi/useCurrentSession";
 import {useLecturerCoursePerformance} from "@/lib/hooks/kpi/useLecturerCoursePerformance";
+import FeedbackDistributionChart from "@/components/charts/FeedbackDistributionChart";
+import RatingTrendsChart from "@/components/charts/RatingTrendsChart";
+import {useRecentFeedbacks} from "@/lib/hooks/kpi/useRecentFeedbacks";
 
 // --- MOCK DATA ---
 const mockUser = {
@@ -81,6 +83,7 @@ export default function LecturerDashboard() {
 
     const { data: dash, isLoading: loadingOverview, error: errorOverview } = useLecturerDashboardOverviewQuery(String(user?.id));
     const { data: sessions, isLoading: loadingSessions, error: sessionError } = useActiveSession();
+    const { data: feedbacks, isLoading: feedbackloading, error: feedbackserror } =  useRecentFeedbacks(String(user?.id));
 
     const sessionId = sessions?.[0]?.sessionId;
     const findCurrentSession = sessions?.find((session)=> session.isCurrent);
@@ -255,7 +258,7 @@ export default function LecturerDashboard() {
                 </Card>
 
                 {/* Recent Feedback */}
-                {feedbackResponses.length > 0 && (
+                {feedbacks && feedbacks.length > 0 && (
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -268,14 +271,13 @@ export default function LecturerDashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                {feedbackResponses.slice(0, 5).map((response) => {
-                                    const ratings = Object.values(response.responses);
-                                    const averageRating = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
+                                {feedbacks.slice(0, 5).map((response) => {
+                                    const averageRating = parseFloat(response.rating);
 
                                     return (
-                                        <div key={response.id} className="p-4 border rounded-lg">
+                                        <div key={response.submittedAt + response.courseName} className="p-4 border rounded-lg">
                                             <div className="flex items-center justify-between mb-2">
-                                                <h4 className="font-medium">{response.course?.name}</h4>
+                                                <h4 className="font-medium">{response.courseName}</h4>
                                                 <div className="flex items-center gap-2">
                                                     <Star className="h-4 w-4 text-yellow-500 fill-current" />
                                                     <span className="text-sm font-medium">{averageRating.toFixed(1)}/5</span>
@@ -284,11 +286,6 @@ export default function LecturerDashboard() {
                                             <p className="text-sm text-muted-foreground mb-2">
                                                 Submitted on {new Date(response.submittedAt).toLocaleDateString()}
                                             </p>
-                                            {response.comments && (
-                                                <p className="text-sm bg-muted p-3 rounded-lg italic">
-                                                    "{response.comments}"
-                                                </p>
-                                            )}
                                         </div>
                                     );
                                 })}
@@ -296,6 +293,7 @@ export default function LecturerDashboard() {
                         </CardContent>
                     </Card>
                 )}
+
             </div>
 
     );

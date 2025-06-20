@@ -3,6 +3,7 @@ import { makeAuthRequest } from "@/lib/api/session";
 import {ActiveSession, Session} from "@/lib/types/session";
 
 export async function createSession(session: Partial<Session>) {
+    console.log(session);
     const { data, status, error } = await makeAuthRequest<Partial<Session>, Session>({
         method: "POST",
         url: "/sessions",

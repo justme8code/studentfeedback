@@ -29,3 +29,9 @@ export interface LecturerCoursePerformance {
     rating: string;
     numberOfReviews: number;
 }
+
+export interface RecentFeedback {
+    courseName: string;
+    submittedAt: string;
+    rating: string;
+}
