@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchAllLecturers, deleteLecturer, updateLecturer } from "@/lib/api/calls/lecturer";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/use-toast-store";
-import { ConfirmDeleteModal } from "@/components/ui/confirm-delete-modal";
+import { ConfirmDeleteModal } from "@/components/modals/confirm-delete-modal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Pencil, Trash2, User } from "lucide-react";
@@ -68,9 +68,7 @@ export function LecturerList() {
 
   return (
     <div className="">
-      <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-        <User className="w-6 h-6 text-primary" /> Lecturers
-      </h2>
+
       {loading ? <div>Loading...</div> : (
         <div className="overflow-x-auto">
           {lecturers.length === 0 ? (

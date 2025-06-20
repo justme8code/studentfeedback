@@ -47,7 +47,8 @@ export async function signUp(values: {
     faculty_id: number
 }) {
 
-    const {status,error} = await myRequest< {
+    console.log(values);
+    const {data,status,error} = await myRequest< {
         full_name: string
         email: string
         password: string
@@ -55,14 +56,21 @@ export async function signUp(values: {
         matric_number: string
         department_id: number
         faculty_id: number
-    },AuthResponse>({
+    },{error:string}>({
         method: "POST",
         headers: {"Content-Type": "application/json"},
         url: `/auth/students`,
         data:values
     })
 
-    return {status:status === 201,error:error.message}
+    if(status === 201) {
+        return {status:status === 201,error:error.message}
+    }
+    else {
+        return {status:status === 201,error:data.error}
+    }
+
+
 }
 
 

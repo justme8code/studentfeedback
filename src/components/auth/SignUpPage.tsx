@@ -95,7 +95,7 @@ export function SignUpPage() {
             level: values.level,
         };
         try {
-            const {  status,error } = await signUp(apiPayload);
+            const { status,error } = await signUp(apiPayload);
             if (status) {
 
                 showSuccessToast("Account created successfully! Please log in.");

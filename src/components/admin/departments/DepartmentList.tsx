@@ -6,7 +6,7 @@ import { fetchAllFaculties } from "@/lib/api/calls/faculty";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/use-toast-store";
 import { Trash2, Pencil, Building2 } from "lucide-react";
-import { ConfirmDeleteModal } from "@/components/ui/confirm-delete-modal";
+import { ConfirmDeleteModal } from "@/components/modals/confirm-delete-modal";
 
 export function DepartmentList({ onEdit }: { onEdit?: (id: string) => void }) {
   const { departments, setDepartments, removeDepartment } = useDepartmentStore();

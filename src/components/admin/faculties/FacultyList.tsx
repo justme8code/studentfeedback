@@ -4,7 +4,7 @@ import { fetchAllFaculties, deleteFaculty } from "@/lib/api/calls/faculty";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/use-toast-store";
 import { Trash2, Pencil, School } from "lucide-react";
-import { ConfirmDeleteModal } from "@/components/ui/confirm-delete-modal";
+import { ConfirmDeleteModal } from "@/components/modals/confirm-delete-modal";
 
 export function FacultyList({ onEdit }: { onEdit?: (id: string) => void }) {
   const { faculties, setFaculties, removeFaculty } = useFacultyStore();

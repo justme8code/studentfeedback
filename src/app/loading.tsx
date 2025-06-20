@@ -1,5 +1,5 @@
 // app/dashboard/loading.tsx
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 export default function Loading() {
     // You can add any UI inside Loading, including a Skeleton.

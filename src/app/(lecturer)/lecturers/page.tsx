@@ -1,128 +1,302 @@
-"use client";
+'use client';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { BookOpen, Users, Star, TrendingUp, MessageSquare } from "lucide-react";
 
-import { useState, useEffect } from "react"; // NEW: Import hooks for state and effects
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, Book } from "lucide-react";
-import { useUserStore } from "@/lib/hooks/useUserStore";
-import { getAllCourseOfferingsByLecturerId } from "@/lib/api/calls/course-offerings";
-import {CourseOfferingWithDetails} from "@/lib/types/course-offering";
-import {CourseOfferingSkeleton} from "@/components/lecturer/CourseOfferingSkeleton";
-import {CourseOfferingCard} from "@/components/lecturer/course-offering-card";
-import {Criterion} from "@/lib/types/criterion";
-import {getCriteria} from "@/lib/api/calls/criterion";
+// --- Assuming these are in the correct path ---
+import FeedbackDistributionChart from "../../../../../schoolfeedback/src/components/charts/FeedbackDistributionChart";
+import RatingTrendsChart from "../../../../../schoolfeedback/src/components/charts/RatingTrendsChart";
+import {useUserStore} from "@/lib/hooks/useUserStore";
+import {useToast} from "@/lib/hooks/use-toast-store";
+import { useLecturerDashboardOverviewQuery } from "@/lib/hooks/kpi/useLecturerDashboardOverview";
+import {useActiveSession} from "@/lib/hooks/kpi/useCurrentSession";
+import {useLecturerCoursePerformance} from "@/lib/hooks/kpi/useLecturerCoursePerformance";
 
-export default function DashboardPage() {
-    // 1. Get user from the client-side store
+// --- MOCK DATA ---
+const mockUser = {
+    id: 1,
+    firstName: "Alan",
+    lastName: "Turing",
+    role: "lecturer",
+};
+
+const mockKpis = {
+    averageRating: 4.6,
+    activeStudents: 134,
+    responseRate: 88,
+};
+
+const mockCourses = [
+    { id: 101, name: "Introduction to Artificial Intelligence", code: "CS-401", department: "Computer Science", semester: "Fall", year: 2023 },
+    { id: 102, name: "Theory of Computation", code: "CS-402", department: "Computer Science", semester: "Fall", year: 2023 },
+    { id: 103, name: "Advanced Cryptography", code: "CS-650", department: "Computer Science", semester: "Spring", year: 2024 },
+];
+
+const mockFeedbackResponses = [
+    {
+        id: 1,
+        courseId: 101,
+        course: mockCourses[0], // Add course object for easy access
+        responses: { q1: 5, q2: 5, q3: 4 },
+        comments: "Professor Turing makes difficult concepts easy to understand. The best course I've taken so far!",
+        submittedAt: "2023-11-20T10:00:00Z",
+    },
+    {
+        id: 2,
+        courseId: 102,
+        course: mockCourses[1],
+        responses: { q1: 4, q2: 5, q3: 5 },
+        comments: "The material on Turing machines was fascinating. I wish there were more practical examples.",
+        submittedAt: "2023-11-18T14:30:00Z",
+    },
+    {
+        id: 3,
+        courseId: 101,
+        course: mockCourses[0],
+        responses: { q1: 5, q2: 4, q3: 4 },
+        comments: "", // No comment provided
+        submittedAt: "2023-11-15T09:00:00Z",
+    },
+    {
+        id: 4,
+        courseId: 103,
+        course: mockCourses[2],
+        responses: { q1: 4, q2: 4, q3: 3 },
+        comments: "The math was a bit intense, but the lecturer was always available to help during office hours.",
+        submittedAt: "2024-04-10T11:00:00Z",
+    },
+];
+// --- END MOCK DATA ---
+
+
+export default function LecturerDashboard() {
+    // Use mock data directly instead of hooks
+    const user1 = mockUser;
+    const courses = mockCourses;
+    const feedbackResponses = mockFeedbackResponses;
+    const kpis = mockKpis;
     const { user } = useUserStore();
 
-    // 2. Set up state for data fetching
-    const [offerings, setOfferings] = useState<CourseOfferingWithDetails[]>([]);
-    const [isLoading, setIsLoading] = useState(true); // Start in loading state
-    const [error, setError] = useState<string | null>(null);
+    const {showErrorToast } = useToast();
 
+    const { data: dash, isLoading: loadingOverview, error: errorOverview } = useLecturerDashboardOverviewQuery(String(user?.id));
+    const { data: sessions, isLoading: loadingSessions, error: sessionError } = useActiveSession();
 
-    // 3. Fetch data inside a useEffect hook
-    useEffect(() => {
-        // Only fetch if we have a user
-        if (!user) {
-            setIsLoading(false);
-            return;
-        }
+    const sessionId = sessions?.[0]?.sessionId;
+    const findCurrentSession = sessions?.find((session)=> session.isCurrent);
 
-        async function fetchOfferings() {
-            try {
-                setIsLoading(true);
-                setError(null);
-                if (user !=null && user.id !=undefined) {
-                    const result = await getAllCourseOfferingsByLecturerId(user.id.toString());
-                    console.log(result.data);
-                    if (result.data) {
-                        setOfferings(result.data);
-                    }
-                }
+    const {
+        data: coursePerformance,
+        isLoading: courseLoading,
+        error: courseError
+    } = useLecturerCoursePerformance(String(user?.id), sessionId??0);
 
+    if (errorOverview) showErrorToast("Failed to load dashboard overview.");
+    if (sessionError) showErrorToast("Failed to fetch sessions.");
+    if (courseError) showErrorToast("Failed to fetch courses performance for this semester.");
 
-            } catch (err) {
-                const message = err instanceof Error ? err.message : "An unknown error occurred.";
-                setError(message);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
-        fetchOfferings();
-    }, [user]); // The effect re-runs if the user object changes
-
-    // This is a "guard clause" for when the store is initializing
-    if (!user) {
-        return (
-            <div className="container mx-auto p-8">
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Authentication Error</AlertTitle>
-                    <AlertDescription>Could not find user. Please log in again.</AlertDescription>
-                </Alert>
-            </div>
-        );
-    }
-
-    // This function helps render the main content based on the current state
-    const renderContent = () => {
-        if (isLoading) {
-            return (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Render 3 skeleton cards as placeholders */}
-                    <CourseOfferingSkeleton />
-                    <CourseOfferingSkeleton />
-                    <CourseOfferingSkeleton />
-                </div>
-            );
-        }
-
-        if (error) {
-            return (
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Could Not Load Courses</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
-            );
-        }
-
-        if (offerings.length === 0) {
-            return (
-                <div className="flex flex-col items-center justify-center text-center p-12 border-2 border-dashed rounded-lg">
-                    <Book className="h-12 w-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold">No Courses Assigned</h3>
-                    <p className="text-muted-foreground">You do not have any courses assigned to you for this semester yet.</p>
-                </div>
-            );
-        }
-
-        return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {offerings.map(offering => (
-                    <CourseOfferingCard key={offering.id} offering={offering} />
-                ))}
-            </div>
-        );
-    };
 
     return (
-        <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold tracking-tight">
-                    Welcome back, {user.full_name}!
-                </h1>
-                <p className="text-muted-foreground">
-                    Here are your assigned courses for the current academic session.
-                </p>
+
+            <div className="space-y-6">
+                {/* Welcome Header */}
+
+                <div className="bg-gradient-to-r  flex justify-between items-center from-green-600 to-blue-600 text-white rounded-lg p-6">
+                    <div>
+                        <h1 className="text-3xl font-bold mb-2">
+                            Welcome, {dash?.lecturerName} {user?.id}
+                        </h1>
+                        <p className="text-green-100">
+                            Your teaching performance overview and student feedback insights.
+                        </p>
+
+
+                    </div>
+                    {findCurrentSession && (
+                       <div className={"flex gap-2 max-h-9"}>
+                           <Badge>
+                               {findCurrentSession.semesterName}
+                           </Badge>
+                           <Badge>
+                               start {findCurrentSession.startDate}
+                           </Badge>
+
+                           <Badge>
+                               end: {findCurrentSession.endDate}
+                           </Badge>
+                       </div>
+                    )}
+                </div>
+
+                {/* KPI Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
+                            <Star className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{dash?.averageRating || 0}/5</div>
+                            <p className="text-xs text-muted-foreground">
+                                Based on all feedback
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
+                            <BookOpen className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{dash?.totalStudentsTaught}</div>
+                            <p className="text-xs text-muted-foreground">
+                                Active this semester
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Active Students</CardTitle>
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{dash?.activeStudents || 0}</div>
+                            <p className="text-xs text-muted-foreground">
+                                Enrolled across courses
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Response Rate</CardTitle>
+                            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{dash?.activeSemesterResponseRate || 0}%</div>
+                            <p className="text-xs text-muted-foreground">
+                                Feedback participation
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Charts Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Feedback Distribution</CardTitle>
+                            <CardDescription>
+                                Distribution of ratings across all feedback criteria
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <FeedbackDistributionChart />
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Rating Trends</CardTitle>
+                            <CardDescription>
+                                Average ratings over time across all courses
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <RatingTrendsChart />
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Courses Overview */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <BookOpen className="h-5 w-5" />
+                            My Courses
+                        </CardTitle>
+                        <CardDescription>
+                            Overview of your courses and their feedback status
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {coursePerformance?.map((course, index) => {
+                                const averageRating = parseFloat(course.rating);
+
+                                return (
+                                    <div key={index} className="p-4 border rounded-lg">
+                                        <h4 className="font-medium">{course.courseName}</h4>
+                                        <p className="text-sm text-muted-foreground mb-2">
+                                            {course.courseCode} • {course.departmentName}
+                                        </p>
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <Badge variant="secondary">{course.semesterName}</Badge>
+                                            <Badge variant={course.numberOfReviews > 0 ? "default" : "outline"}>
+                                                {course.numberOfReviews} Reviews
+                                            </Badge>
+                                        </div>
+                                        {averageRating > 0 && (
+                                            <div className="flex items-center gap-2">
+                                                <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                                                <span className="text-sm font-medium">
+                {averageRating.toFixed(1)}/5
+              </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </CardContent>
+
+                </Card>
+
+                {/* Recent Feedback */}
+                {feedbackResponses.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <MessageSquare className="h-5 w-5" />
+                                Recent Feedback
+                            </CardTitle>
+                            <CardDescription>
+                                Latest student feedback on your courses
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                {feedbackResponses.slice(0, 5).map((response) => {
+                                    const ratings = Object.values(response.responses);
+                                    const averageRating = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
+
+                                    return (
+                                        <div key={response.id} className="p-4 border rounded-lg">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <h4 className="font-medium">{response.course?.name}</h4>
+                                                <div className="flex items-center gap-2">
+                                                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                                                    <span className="text-sm font-medium">{averageRating.toFixed(1)}/5</span>
+                                                </div>
+                                            </div>
+                                            <p className="text-sm text-muted-foreground mb-2">
+                                                Submitted on {new Date(response.submittedAt).toLocaleDateString()}
+                                            </p>
+                                            {response.comments && (
+                                                <p className="text-sm bg-muted p-3 rounded-lg italic">
+                                                    "{response.comments}"
+                                                </p>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
             </div>
 
-            <div>
-                <h2 className="text-xl font-semibold mb-4">Assigned Courses</h2>
-                {renderContent()}
-            </div>
-        </div>
     );
 }

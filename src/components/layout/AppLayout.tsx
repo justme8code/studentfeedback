@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"; // For mobile
 import { Menu, XSquare } from "lucide-react"; // Icons for mobile menu
 import Link from "next/link";
+import {Logo} from "@/components/Logo";
 
 interface AppLayoutProps {
     children: React.ReactNode;
@@ -22,7 +23,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <div className="flex h-16 items-center border-b px-6">
                     {/* App Logo/Name for Sidebar Header */}
                     <Link href="/dashboard" className="text-xl font-bold tracking-tight text-primary">
-                        StudentFeedback
+                        <Logo/>
                     </Link>
                 </div>
                 <div className="flex-1 overflow-y-auto p-4">
@@ -36,7 +37,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <div className="flex h-16 items-center border-b px-6">
                     {/* App Logo/Name for Sidebar Header */}
                     <Link href="/dashboard" className="text-xl font-bold tracking-tight text-primary">
-                        StudentFeedback
+                        <Logo/>
                     </Link>
                 </div>
                 <div className="flex-1 overflow-y-auto p-4">
@@ -61,7 +62,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                                 </button>
                             </SheetTrigger>
                             <SheetContent side="left" className="p-0 w-64">
-                                <div className="h-16 flex items-center border-b px-6 font-bold text-xl text-primary">StudentFeedback</div>
+                                <div className="h-16 flex items-center border-b px-6 font-bold text-xl text-primary">CFMS</div>
                                 <div className="p-4">
                                     <SideNav />
                                 </div>

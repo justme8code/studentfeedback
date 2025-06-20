@@ -9,3 +9,15 @@ export interface Session {
     is_active: boolean;
     semesters: Semester[];
 }
+
+export interface ActiveSession {
+    sessionId:number;
+    sessionName:string;
+    sessionStatus:string;
+    sessionActive:boolean;
+    semesterId:number;
+    semesterName:string;
+    startDate:string;
+    endDate:string;
+    isCurrent:boolean;
+}

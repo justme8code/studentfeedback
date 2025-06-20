@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import {LecturerSideNav} from "@/components/layout/LecturerSideNav";
 import {useRoleRedirect} from "@/lib/hooks/useRoleRedirect";
+import {Logo} from "@/components/Logo";
 
 export default function LecturerLayout({ children }: { children: React.ReactNode }) {
 
@@ -17,7 +18,7 @@ export default function LecturerLayout({ children }: { children: React.ReactNode
             {/* Sidebar for admin - visible on md+ */}
             <aside className="fixed inset-y-0 left-0 z-30 w-64 flex-col border-r bg-card hidden md:flex">
                 <div className="flex h-16 items-center border-b px-6">
-                    <span className="text-xl font-bold tracking-tight text-primary">Lecturer</span>
+                    <Logo/>
                 </div>
                 <div className="flex-1 overflow-y-auto p-4">
                     <LecturerSideNav/>
@@ -31,7 +32,9 @@ export default function LecturerLayout({ children }: { children: React.ReactNode
                     </button>
                 </SheetTrigger>
                 <SheetContent side="left" className="p-0 w-64">
-                    <div className="h-16 flex items-center border-b px-6 font-bold text-xl text-primary">Admin Panel</div>
+                    <div className={"flex gap-2"}>
+                        <Logo/>
+                    </div>
                     <div className="p-4">
                         <LecturerSideNav />
                     </div>

@@ -80,35 +80,10 @@ export default function CoursesPage() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4">
+    <div className="w-full max-w-7xl mx-auto p-4 space-y-10">
       <div className={"flex justify-between items-center "}>
-        <h1 className="text-2xl font-bold mb-6">Department Courses</h1>
-      </div>
+        <h1 className="text-2xl font-bold mb-6">Department  & Courses</h1>
 
-
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 ite">
-        {/* Search + Filter */}
-        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-          <input
-              type="text"
-              placeholder="Search by course title or code..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="border rounded-md px-4 py-2 w-full sm:w-80 dark:bg-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-          <select
-              value={levelFilter}
-              onChange={(e) => setLevelFilter(e.target.value)}
-              className="border rounded-md px-4 py-2 w-full sm:w-40 dark:bg-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="">All Levels</option>
-            {allLevels.map((level) => (
-                <option key={level as string} value={level as string}>
-                  {level}
-                </option>
-            ))}
-          </select>
-        </div>
 
         {/* Add Course Button & Dialog */}
         <div className="flex justify-end">
@@ -159,6 +134,30 @@ export default function CoursesPage() {
             </DialogContent>
           </Dialog>
         </div>
+      </div>
+
+
+      <div className="flex  w-full md:items-center  justify-between gap-4 mb-6 ite">
+        <input
+            type="text"
+            placeholder="Search by course title or code..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border rounded-md px-4 py-2 w-full dark:bg-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        <select
+            value={levelFilter}
+            onChange={(e) => setLevelFilter(e.target.value)}
+            className="border rounded-md px-4 py-2 w-full sm:w-40 dark:bg-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+        >
+          <option value="">All Levels</option>
+          {allLevels.map((level) => (
+              <option key={level as string} value={level as string}>
+                {level}
+              </option>
+          ))}
+        </select>
+
       </div>
 
       {loading ? (

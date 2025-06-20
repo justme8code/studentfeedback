@@ -1,6 +1,6 @@
 'use server';
 import { makeAuthRequest } from "@/lib/api/session";
-import { Session } from "@/lib/types/session";
+import {ActiveSession, Session} from "@/lib/types/session";
 
 export async function createSession(session: Partial<Session>) {
     const { data, status, error } = await makeAuthRequest<Partial<Session>, Session>({
@@ -26,5 +26,15 @@ export async function getSessionsByDate(from: string, to: string) {
     });
     return { data, status: status === 200, error };
 }
+
+export async function getActiveSession( ) {
+    const { data, status, error } = await makeAuthRequest<null,ActiveSession[]>({
+        method: "GET",
+        url: `/sessions/active`
+    });
+    return { data, status: status === 200, error };
+}
+
+
 
 

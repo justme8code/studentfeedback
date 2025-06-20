@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 import type { Faculty, Department, Course } from "@/lib/types";
 import {getCoursesByDepartment, getDepartmentsByFaculty, getFaculties} from "@/lib/api/calls/acadamics";
