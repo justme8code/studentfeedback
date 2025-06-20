@@ -33,5 +33,6 @@ export interface LecturerCoursePerformance {
 export interface RecentFeedback {
     courseName: string;
     submittedAt: string;
+    feedbackText: string;
     rating: string;
 }

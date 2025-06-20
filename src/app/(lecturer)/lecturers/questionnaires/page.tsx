@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {useState, useEffect, useRef} from "react";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, AlertCircle } from "lucide-react";
 import { QuestionnairesTable } from "@/components/lecturer/QuestionnairesTable"; // Adjust path if needed
@@ -21,28 +21,37 @@ export default function QuestionnairesPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const wasModalOpen = useRef(false); // Track previous open state
+
+    // ⏪ Track when modal transitions from open to closed
+    useEffect(() => {
+        if (wasModalOpen.current && !isModalOpen) {
+            window.location.reload(); // 🔄 reload page
+        }
+        wasModalOpen.current = isModalOpen;
+    }, [isModalOpen]);
     const { user } = useUserStore();
+
+    async function loadQuestionnaires() {
+        setIsLoading(true);
+        setError(null);
+        if(user != null && user.id !=null){
+            const result = await getLecturerQuestionnaires(user.id.toString());
+            if (result.error) {
+                setError(result.error);
+            } else if (result.data) {
+                setQuestionnaires(result.data);
+            }
+            setIsLoading(false);
+        }
+
+    }
 
     // Fetch data when the component mounts or the user changes
     useEffect(() => {
         if (!user) {
             setIsLoading(false);
             return;
-        }
-
-        async function loadQuestionnaires() {
-            setIsLoading(true);
-            setError(null);
-            if(user != null && user.id !=null){
-                const result = await getLecturerQuestionnaires(user.id.toString());
-                if (result.error) {
-                    setError(result.error);
-                } else if (result.data) {
-                    setQuestionnaires(result.data);
-                }
-                setIsLoading(false);
-            }
-
         }
 
         loadQuestionnaires();

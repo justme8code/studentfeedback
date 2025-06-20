@@ -53,3 +53,12 @@ export async function  fetchRecentFeedbacks(lecturerId:string) {
 
     return { data, status: status === 200, error };
 }
+
+export async function  fetchRecentTextFeedbacks(lecturerId:string) {
+    const { data, status, error } = await makeAuthRequest<null,RecentFeedback[]>({
+        method: "GET",
+        url: `/kpis/lecturers/${lecturerId}/recent-text-feedbacks`,
+    });
+
+    return { data, status: status === 200, error };
+}

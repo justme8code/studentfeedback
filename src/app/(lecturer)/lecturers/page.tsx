@@ -12,82 +12,23 @@ import {useActiveSession} from "@/lib/hooks/kpi/useCurrentSession";
 import {useLecturerCoursePerformance} from "@/lib/hooks/kpi/useLecturerCoursePerformance";
 import FeedbackDistributionChart from "@/components/charts/FeedbackDistributionChart";
 import RatingTrendsChart from "@/components/charts/RatingTrendsChart";
-import {useRecentFeedbacks} from "@/lib/hooks/kpi/useRecentFeedbacks";
-
-// --- MOCK DATA ---
-const mockUser = {
-    id: 1,
-    firstName: "Alan",
-    lastName: "Turing",
-    role: "lecturer",
-};
-
-const mockKpis = {
-    averageRating: 4.6,
-    activeStudents: 134,
-    responseRate: 88,
-};
-
-const mockCourses = [
-    { id: 101, name: "Introduction to Artificial Intelligence", code: "CS-401", department: "Computer Science", semester: "Fall", year: 2023 },
-    { id: 102, name: "Theory of Computation", code: "CS-402", department: "Computer Science", semester: "Fall", year: 2023 },
-    { id: 103, name: "Advanced Cryptography", code: "CS-650", department: "Computer Science", semester: "Spring", year: 2024 },
-];
-
-const mockFeedbackResponses = [
-    {
-        id: 1,
-        courseId: 101,
-        course: mockCourses[0], // Add course object for easy access
-        responses: { q1: 5, q2: 5, q3: 4 },
-        comments: "Professor Turing makes difficult concepts easy to understand. The best course I've taken so far!",
-        submittedAt: "2023-11-20T10:00:00Z",
-    },
-    {
-        id: 2,
-        courseId: 102,
-        course: mockCourses[1],
-        responses: { q1: 4, q2: 5, q3: 5 },
-        comments: "The material on Turing machines was fascinating. I wish there were more practical examples.",
-        submittedAt: "2023-11-18T14:30:00Z",
-    },
-    {
-        id: 3,
-        courseId: 101,
-        course: mockCourses[0],
-        responses: { q1: 5, q2: 4, q3: 4 },
-        comments: "", // No comment provided
-        submittedAt: "2023-11-15T09:00:00Z",
-    },
-    {
-        id: 4,
-        courseId: 103,
-        course: mockCourses[2],
-        responses: { q1: 4, q2: 4, q3: 3 },
-        comments: "The math was a bit intense, but the lecturer was always available to help during office hours.",
-        submittedAt: "2024-04-10T11:00:00Z",
-    },
-];
-// --- END MOCK DATA ---
+import {useRecentTextFeedbacks} from "@/lib/hooks/kpi/useRecentTextFeedbacks";
 
 
 export default function LecturerDashboard() {
-    // Use mock data directly instead of hooks
-    const user1 = mockUser;
-    const courses = mockCourses;
-    const feedbackResponses = mockFeedbackResponses;
-    const kpis = mockKpis;
+
     const { user } = useUserStore();
 
     const {showErrorToast } = useToast();
 
     const { data: dash, isLoading: loadingOverview, error: errorOverview } = useLecturerDashboardOverviewQuery(String(user?.id));
     const { data: sessions, isLoading: loadingSessions, error: sessionError } = useActiveSession();
-    const { data: feedbacks, isLoading: feedbackloading, error: feedbackserror } =  useRecentFeedbacks(String(user?.id));
+    const { data: feedbacks, isLoading: feedbackloading, error: feedbackserror } =  useRecentTextFeedbacks(String(user?.id));
 
     const sessionId = sessions?.[0]?.sessionId;
     const findCurrentSession = sessions?.find((session)=> session.isCurrent);
 
+    console.log(feedbacks);
     const {
         data: coursePerformance,
         isLoading: courseLoading,
@@ -244,10 +185,10 @@ export default function LecturerDashboard() {
                                         {averageRating > 0 && (
                                             <div className="flex items-center gap-2">
                                                 <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                                                <span className="text-sm font-medium">
-                {averageRating.toFixed(1)}/5
-              </span>
-                                            </div>
+                                                                                <span className="text-sm font-medium">
+                                                {averageRating.toFixed(1)}/5
+                                              </span>
+                                                                            </div>
                                         )}
                                     </div>
                                 );
@@ -271,28 +212,30 @@ export default function LecturerDashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                {feedbacks.slice(0, 5).map((response) => {
-                                    const averageRating = parseFloat(response.rating);
-
-                                    return (
-                                        <div key={response.submittedAt + response.courseName} className="p-4 border rounded-lg">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <h4 className="font-medium">{response.courseName}</h4>
-                                                <div className="flex items-center gap-2">
-                                                    <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                                                    <span className="text-sm font-medium">{averageRating.toFixed(1)}/5</span>
-                                                </div>
+                                {feedbacks.map((response, index) => (
+                                    <div key={response.submittedAt + response.courseName} className="p-4 border rounded-lg">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="font-medium">{response.courseName}</h4>
+                                            <div className="flex items-center gap-2">
+                                                <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                                                <span className="text-sm font-medium">{response.rating}/5</span>
                                             </div>
-                                            <p className="text-sm text-muted-foreground mb-2">
-                                                Submitted on {new Date(response.submittedAt).toLocaleDateString()}
-                                            </p>
                                         </div>
-                                    );
-                                })}
+                                        <p className="text-sm text-muted-foreground mb-2">
+                                            Submitted on {new Date(response.submittedAt).toLocaleDateString()}
+                                        </p>
+                                        {response.feedbackText && (
+                                            <p className="text-sm bg-muted p-3 rounded-lg italic">
+                                                "{response.feedbackText}"
+                                            </p>
+                                        )}
+                                    </div>
+                                ))}
                             </div>
                         </CardContent>
                     </Card>
                 )}
+
 
             </div>
 

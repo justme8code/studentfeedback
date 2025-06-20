@@ -1,15 +1,12 @@
-// In: @/lib/hooks/kpi/useLecturerPerformanceQuery.ts
+import {useQuery} from "@tanstack/react-query";
+import {fetchRecentTextFeedbacks} from "@/lib/api/calls/kpi/kpi";
 
-
-import { useQuery } from '@tanstack/react-query';
-import {fetchLecturerPerformances, fetchRecentFeedbacks, fetchRecentTextFeedbacks} from "@/lib/api/calls/kpi/kpi";
-
-export function  useRecentFeedbacks(id:string) {
+export function  useRecentTextFeedbacks(id:string) {
     return useQuery({
-        queryKey: ['recent_feedbacks'],
+        queryKey: ['recent-text-feedbacks'],
         queryFn: async () => {
             // The function now returns our serializable ApiResponse object
-            const res = await fetchRecentFeedbacks(id);
+            const res = await  fetchRecentTextFeedbacks(id);
 
             // If the status is false, throw an error so React Query can handle it
             if (!res.status) {
@@ -21,4 +18,3 @@ export function  useRecentFeedbacks(id:string) {
         },
     });
 }
-
