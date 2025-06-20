@@ -44,6 +44,26 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
         });
     }, [lecturer.id]);
 
+    const handleUnassign = async (id:number)=>{
+        unAssignCourseByIds([id])
+            .then(value => {
+                if (value.status) {
+                    setOfferings(prev => prev.filter(o => o.id !== id));
+                    setSuccess("Course unassigned successfully");
+                    setTimeout(() =>  {
+                        setSuccess("");
+                        setError("");
+                    }, 1500);
+                } else {
+                    setError(value.error?.message || "Failed to unassign course");
+                    setTimeout(() =>  {
+                        setSuccess("");
+                        setError("");
+                    }, 1500);
+                }
+            })
+    }
+
     const handleAssign = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
@@ -121,23 +141,7 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
                                         </div>
 
                                         <Button variant={"outline"} onClick={() => {
-                                            unAssignCourseByIds([off.id])
-                                                .then(value => {
-                                                    if (value.status) {
-                                                        setOfferings(prev => prev.filter(o => o.id !== off.id));
-                                                        setSuccess("Course unassigned successfully");
-                                                        setTimeout(() =>  {
-                                                            setSuccess("");
-                                                            setError("");
-                                                        }, 1500);
-                                                    } else {
-                                                        setError(value.error?.message || "Failed to unassign course");
-                                                        setTimeout(() =>  {
-                                                            setSuccess("");
-                                                            setError("");
-                                                        }, 1500);
-                                                    }
-                                                })
+                                              handleUnassign(off.id);
                                         }}>
                                             <MinusCircle className="h-5 w-5 text-muted-foreground" />
                                             Unassign

@@ -39,6 +39,7 @@ export function QuestionnaireForm({ onFinished }: QuestionnaireFormProps) {
         setIsSubmitting(true);
         setErrorMessage(null);
 
+        console.log("Checking what course offering id is ", data.course_offering_id);
         const apiPayload: QuestionnaireCreatePayload = {
             title: data.title,
             course_offering_id: parseInt(data.course_offering_id, 10),

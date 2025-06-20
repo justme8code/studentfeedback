@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   MessageSquarePlus,
   Edit3,
-  CheckCircle2,
+  CheckCircle2, BookOpen, Clock, MessageSquare,
 } from "lucide-react";
 import { useUserStore } from "@/lib/hooks/useUserStore";
 import {
@@ -66,26 +66,61 @@ export default function DashboardPage() {
       : (user?.full_name || "U");
 
   return (
-      <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-10">
         {/* Header */}
-        <div className="mb-8 flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-          <div className="flex items-center space-x-4">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={undefined} alt={userName} />
-              <AvatarFallback>{userName.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">
-                Welcome, {userName}!
-              </h1>
-              <p className="text-muted-foreground">
-                Here's an overview of your student-courses and feedbacks status.
-              </p>
-            </div>
-          </div>
+
+
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg p-6">
+          <h1 className="text-3xl font-bold mb-2">
+            Welcome back, {user?.full_name}!
+          </h1>
+          <p className="text-blue-100">
+            You have {coursesPendingFeedback.length} pending feedback {coursesPendingFeedback.length === 1 ? 'form' : 'forms'} to complete.
+          </p>
         </div>
 
-        <Separator className="my-6" />
+
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Enrolled Courses</CardTitle>
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{enrolledCourses.length}</div>
+              <p className="text-xs text-muted-foreground">
+                Active this semester
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Pending Feedback</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{coursesPendingFeedback.length}</div>
+              <p className="text-xs text-muted-foreground">
+                Forms waiting for completion
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Submitted Feedback</CardTitle>
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{submittedFeedbacks.length}</div>
+              <p className="text-xs text-muted-foreground">
+                Completed this semester
+              </p>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* === Pending Feedback Section === */}
         {coursesPendingFeedback && coursesPendingFeedback.length > 0 && (
@@ -121,6 +156,8 @@ export default function DashboardPage() {
               </div>
             </section>
         )}
+
+
 
         {/* === Enrolled Courses Section === */}
         {enrolledCourses.length > 0 && (
