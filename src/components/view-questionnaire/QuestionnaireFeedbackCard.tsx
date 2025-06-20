@@ -64,14 +64,28 @@ export default function QuestionFeedbackCard({ question , questionnaireId}: { qu
         return (
             <ul className="space-y-3 pt-4">
                 {feedback.map((answer) => (
-                    <li key={answer.id} className="p-3 bg-slate-50 rounded-md border border-slate-200">
-                        <div className="text-slate-800 font-medium">
-                            {answer.answer_text ? <blockquote className="italic">"{answer.answer_text.trim()}"</blockquote> : <span className="text-blue-600">Value: {answer.answer_value}</span>}
-                        </div>
-                        <p className="text-xs text-slate-400 mt-2 text-right">
-                            Submitted: {new Date(answer.submitted_at).toLocaleDateString()}
-                        </p>
-                    </li>
+                    <div className="text-slate-800 font-medium">
+                        {answer.answer_text ? (
+                            <blockquote className="italic">"{answer.answer_text.trim()}"</blockquote>
+                        ) : question.question_type === "rating" ? (
+                            <div className="flex items-center gap-1 justify-between text-yellow-500">
+                                 <div className={"flex gap-1"}>
+                                     {Array.from({ length: 5 }).map((_, i) => (
+                                         <Star
+                                             key={i}
+                                             className={`h-4 w-4 ${i < Number(answer.answer_value) ? "fill-current" : "stroke-current"}`}
+                                         />
+                                     ))}
+                                 </div>
+                                <span className="ml-2 text-sm text-slate-600">{Number(answer.answer_value).toFixed(1)}/5</span>
+                            </div>
+                        ) : (
+                            <span className="text-blue-600">
+                              Value: {answer.answer_value}
+                            </span>
+                        )}
+                    </div>
+
                 ))}
             </ul>
         );

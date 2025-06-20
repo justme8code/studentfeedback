@@ -54,7 +54,7 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
         }
         const res = await createCourseOfferings(lecturer.id, form.course_id, form.semester_id);
         if (res.status) {
-            setSuccess(
+            /*setSuccess(
                 res.successData?.length > 0
                     ? res.duplicatesData?.length > 0
                         // Case: Successes AND Duplicates
@@ -66,8 +66,8 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
                         ? 'Some courses were duplicates and not assigned.'
                         // Case: NO Successes and NO Duplicates
                         : 'No courses assigned.'
-            );
-            setTimeout(() => setSuccess(""), 1500);
+            );*/
+            setSuccess("Course Assigned assigned successfully.");
 
             const offeringsRes = await getAllCourseOfferingsByLecturerId(lecturer.id);
             if (offeringsRes.status && offeringsRes.data) setOfferings(offeringsRes.data);
@@ -75,6 +75,12 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
         } else {
             setError(res.error?.message || "Failed to assign course offering");
         }
+
+        setTimeout(() =>  {
+            setSuccess("");
+            setError("");
+        }, 1500);
+
     };
 
     //
@@ -120,8 +126,16 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
                                                     if (value.status) {
                                                         setOfferings(prev => prev.filter(o => o.id !== off.id));
                                                         setSuccess("Course unassigned successfully");
+                                                        setTimeout(() =>  {
+                                                            setSuccess("");
+                                                            setError("");
+                                                        }, 1500);
                                                     } else {
                                                         setError(value.error?.message || "Failed to unassign course");
+                                                        setTimeout(() =>  {
+                                                            setSuccess("");
+                                                            setError("");
+                                                        }, 1500);
                                                     }
                                                 })
                                         }}>

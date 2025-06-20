@@ -75,9 +75,9 @@ export function LecturerForm() {
         department_id: Number(values.departmentId),
       };
 
-      const { data, status, message } = await createLecturer(payload);
+      const { status, message } = await createLecturer(payload);
 
-      if (data && status) {
+      if (status) {
         showSuccessToast("Lecturer created successfully!");
         form.reset();
         setOpen(false);
@@ -88,8 +88,10 @@ export function LecturerForm() {
       console.error("Error creating lecturer:", error);
       showErrorToast("An error occurred while creating lecturer.");
     } finally {
+
       hide();
     }
+
   };
 
   return (
