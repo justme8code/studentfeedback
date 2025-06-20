@@ -47,17 +47,17 @@ export function QuestionnairesTable({ questionnaires }: QuestionnairesTableProps
     };
 
     return (
-        <div className="w-full gap-10 grid grid-cols-1 md:grid-cols-2  ">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10">
             {questionnaireList.map((q) => (
                 <Card
                     key={q.id}
-                    className="p-5 border rounded-xl shadow-sm hover:shadow-md transition bg-background cursor-pointer group"
+                    className="p-6 border rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 bg-background cursor-pointer group"
                     onClick={() => router.push(`/lecturers/questionnaires/${q.id}`)}
                 >
                     {/* Header */}
-                    <div className="flex items-start justify-between gap-2">
-                        <div className="space-y-1">
-                            <h3 className="text-xl font-bold leading-snug group-hover:text-primary transition">
+                    <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-1.5">
+                            <h3 className="text-lg font-semibold leading-tight group-hover:text-primary transition-colors duration-200">
                                 {q.title}
                             </h3>
                             <p className="text-sm text-muted-foreground">
@@ -70,13 +70,17 @@ export function QuestionnairesTable({ questionnaires }: QuestionnairesTableProps
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="hover:bg-muted"
+                                    className="hover:bg-muted rounded-full"
                                     onClick={(e) => e.stopPropagation()}
                                 >
                                     <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-48 p-2" align="end" onClick={(e) => e.stopPropagation()}>
+                            <PopoverContent
+                                className="w-48 p-2 z-50"
+                                align="end"
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 <Command>
                                     <CommandItem onSelect={() => handleUpdateQuestionnaireStatus(q.id, q.status)}>
                                         {q.status === "active" ? "Deactivate" : "Activate"}
@@ -90,9 +94,9 @@ export function QuestionnairesTable({ questionnaires }: QuestionnairesTableProps
                     </div>
 
                     {/* Divider */}
-                    <div className="my-3 border-t" />
+                    <div className="my-4 border-t" />
 
-                    {/* Content Meta Info */}
+                    {/* Meta Info */}
                     <div className="flex flex-wrap gap-2 text-sm">
                         <Badge variant="outline">
                             {q.course_offering?.course_code ?? "Unknown Course"}
@@ -105,11 +109,11 @@ export function QuestionnairesTable({ questionnaires }: QuestionnairesTableProps
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-4 flex justify-end">
+                    <div className="mt-5 flex justify-end">
                         <Button
                             variant="link"
                             size="sm"
-                            className="text-muted-foreground hover:text-primary"
+                            className="text-muted-foreground hover:text-primary transition"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 router.push(`/lecturers/questionnaires/view/${q.id}`);
@@ -121,5 +125,6 @@ export function QuestionnairesTable({ questionnaires }: QuestionnairesTableProps
                 </Card>
             ))}
         </div>
+
     );
 }
