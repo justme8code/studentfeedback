@@ -1,86 +1,144 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import {
-    LogIn,
-    UserPlus,
-    ClipboardList,
-    BookOpenCheck,
-    MessageSquareText,
-    BarChart3,
-} from 'lucide-react';
+'use client';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GraduationCap, Users, BarChart3, Star } from "lucide-react";
+import {Logo} from "@/components/Logo";
 
-export default function LandingPage() {
+
+export default function Landing() {
+
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-900 to-black text-white px-4 py-12 flex flex-col items-center">
-            {/* Logo */}
-            <img
-                src="https://www.calebuniversity.edu.ng/caleb_uploads/2024/03/cropped-caleb-logoooonnnttt-180x180.png"
-                alt="Caleb Logo"
-                className="w-24 h-24 rounded-full bg-white p-2 mb-6"
-            />
-
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
             {/* Header */}
-            <h1 className="text-3xl md:text-5xl font-bold mb-2 text-center">
-                Caleb Student Feedback System
-            </h1>
-            <p className="text-lg text-purple-200 max-w-2xl text-center mb-10">
-                Shape the future of learning. Your voice matters.
-            </p>
+            <header className="bg-white shadow-sm border-b">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center h-16">
+                        <div className="flex items-center">
+                            <Logo/>
+                        </div>
+                        <Button onClick={() => window.location.href = '/auth'}>
+                            Sign In
+                        </Button>
+                    </div>
+                </div>
+            </header>
 
-            {/* About Section */}
-            <div className="max-w-3xl text-center mb-12">
-                <p className="text-md md:text-lg mb-4">
-                    This platform enables Caleb University students to provide anonymous and honest feedback about their learning experiences, course delivery, and lecturers.
-                </p>
-                <p className="text-md md:text-lg mb-4">
-                    Your feedback helps the university identify what’s working, what needs improvement, and how to build a better academic environment for everyone.
-                </p>
-                <p className="text-md md:text-lg">
-                    Whether it’s praising great teaching or pointing out challenges, your insights are crucial.
-                </p>
-            </div>
+            {/* Hero Section */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div className="text-center mb-16">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                        Enhance Academic Excellence Through Feedback
+                    </h1>
+                    <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                        A comprehensive platform for students, lecturers, and administrators to collaborate
+                        on improving educational quality through structured feedback and analytics.
+                    </p>
+                    <div className="space-y-4">
+                        <Button
+                            size="lg"
+                            className="academic-bg-primary hover:bg-blue-700"
+                            onClick={() => window.location.href = '/auth'}
+                        >
+                            Get Started
+                        </Button>
+                    </div>
+                </div>
 
-            {/* Steps */}
-            <div className="text-left max-w-xl mb-10">
-                <h2 className="text-xl font-semibold mb-4 text-white">How it works:</h2>
-                <ul className="space-y-4 text-purple-100">
-                    <li className="flex items-center gap-3">
-                        <LogIn className="text-purple-400" />
-                        Log in with your student ID or sign up if you're new.
-                    </li>
-                    <li className="flex items-center gap-3">
-                        <BookOpenCheck className="text-purple-400" />
-                        Choose a course or lecturer to review.
-                    </li>
-                    <li className="flex items-center gap-3">
-                        <MessageSquareText className="text-purple-400" />
-                        Answer simple questions and submit your feedback.
-                    </li>
-                    <li className="flex items-center gap-3">
-                        <BarChart3 className="text-purple-400" />
-                        Your feedback goes directly to the academic board for review.
-                    </li>
-                </ul>
-            </div>
+                {/* Features Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                    <Card className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                                <Users className="h-6 w-6 text-blue-600" />
+                            </div>
+                            <CardTitle>For Students</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-gray-600">
+                                Provide anonymous feedback on courses and lecturers through structured questionnaires.
+                                Help improve your educational experience.
+                            </p>
+                        </CardContent>
+                    </Card>
 
-            {/* CTA Buttons */}
-            <div className="flex gap-4">
-                <Link href="/auth">
-                    <Button variant="default" size="lg">
-                        <LogIn className="mr-2" /> Login
-                    </Button>
-                </Link>
-                <Link href="/auth/sign-up">
-                    <Button variant="outline" size="lg">
-                        <UserPlus className="mr-2" /> Sign Up
-                    </Button>
-                </Link>
-            </div>
+                    <Card className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                                <BarChart3 className="h-6 w-6 text-green-600" />
+                            </div>
+                            <CardTitle>For Lecturers</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-gray-600">
+                                Access detailed analytics and KPIs about your teaching performance.
+                                View feedback trends and improve your courses.
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <Star className="h-6 w-6 text-purple-600" />
+                            </div>
+                            <CardTitle>For Administrators</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-gray-600">
+                                Manage feedback rounds, criteria, and get system-wide analytics.
+                                Monitor lecturer performance and improve institutional quality.
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Benefits Section */}
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                        Why Choose Our Platform?
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-3">Anonymous Feedback</h3>
+                            <p className="text-gray-600 mb-4">
+                                Students can provide honest feedback without fear of retaliation,
+                                ensuring authentic insights for improvement.
+                            </p>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-3">Real-time Analytics</h3>
+                            <p className="text-gray-600 mb-4">
+                                Get immediate insights with comprehensive dashboards and visual analytics
+                                to track performance trends.
+                            </p>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-3">Customizable Criteria</h3>
+                            <p className="text-gray-600 mb-4">
+                                Define custom feedback criteria that align with your institution's
+                                quality standards and goals.
+                            </p>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-3">Scheduled Rounds</h3>
+                            <p className="text-gray-600 mb-4">
+                                Organize feedback collection in structured rounds with defined
+                                timeframes for systematic evaluation.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </main>
 
             {/* Footer */}
-            <div className="mt-16 text-sm text-purple-300 text-center">
-                Powered by Caleb University — Built with ❤️ by students, for students.
-            </div>
+            <footer className="bg-white border-t mt-16">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="text-center text-gray-600">
+                        <p>&copy; 2024 Academic Feedback System. All rights reserved.</p>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 }

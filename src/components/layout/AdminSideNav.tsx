@@ -12,7 +12,7 @@ import {
 	MessageSquareText,
 	Settings,
 	Timer,
-	NotebookPen
+	NotebookPen, TableProperties
 } from "lucide-react";
 
 const adminNavItems = [
@@ -25,6 +25,11 @@ const adminNavItems = [
 		href: "/admin/courses",
 		label: "Courses",
 		icon: <NotebookPen />,
+	},
+	{
+		href: "/admin/criteria",
+		label: "Criteria",
+		icon: <TableProperties />
 	},
 	{
 		href: "/admin/faculties",

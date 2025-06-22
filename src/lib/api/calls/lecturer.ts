@@ -3,7 +3,7 @@ import {makeAuthRequest} from "@/lib/api/session";
 import type { User } from "@/lib/types/user";
 import {myRequest} from "@/lib/api/axios";
 import {Questionnaire} from "@/lib/types/questionnaire";
-
+import {LecturerPerformanceChart} from "@/lib/types/kpi";
 
 export async function createLecturer(values: {
   fullName: string
@@ -72,5 +72,13 @@ export async function getLecturerQuestionnaires(lecturerId: string) {
   } else {
     return { error: error.message || "Failed to fetch lecturer questionnaires" };
   }
+}
+
+export async function getLecturerPerformanceByCriterion(lecturerId: number) {
+  const {data, status, error} = await makeAuthRequest<null, LecturerPerformanceChart[]>({
+    method: "GET",
+    url: `/kpis/lecturers/performance-chart`
+  });
+  return {data,status:status===200,error};
 }
 

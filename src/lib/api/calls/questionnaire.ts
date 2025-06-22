@@ -5,6 +5,7 @@ import {PaginatedData} from "@/lib/types/paginated";
 import {PaginatedFeedbackResponse, Questionnaire2} from "@/lib/schema";
 import {Feedback} from "@/lib/types/feedback";
 import {FeedbackSubmission} from "@/lib/types/feedback-submission";
+import {FeedbackResponse} from "@/lib/types/view_questionnaire";
 
 export async function createQuestionnaire(questionnaire: QuestionnaireCreatePayload) {
 
@@ -113,3 +114,17 @@ export async function getFeedbackForQuestion(questionnairId:number,questionId: n
 
     return { data, status: status === 200, error: error?.message || "An error occurred" };
 }
+
+
+export async function getFeedbackResponse(id:string) {
+    // Note the return type here
+    const { data, status, error } = await makeAuthRequest<null,FeedbackResponse>({
+        method: "GET",
+        // This URL should match your backend route for getting answers for a specific question
+        url: `/questionnaires/${id}/grouped`
+    });
+
+    return { data, status: status === 200, error: error };
+}
+
+

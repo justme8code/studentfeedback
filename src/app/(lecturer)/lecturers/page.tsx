@@ -13,6 +13,7 @@ import {useLecturerCoursePerformance} from "@/lib/hooks/kpi/useLecturerCoursePer
 import FeedbackDistributionChart from "@/components/charts/FeedbackDistributionChart";
 import RatingTrendsChart from "@/components/charts/RatingTrendsChart";
 import {useRecentTextFeedbacks} from "@/lib/hooks/kpi/useRecentTextFeedbacks";
+import LecturerPerformanceInfo from "@/app/(lecturer)/lecturers/LecturerPerformanceInfo";
 
 
 export default function LecturerDashboard() {
@@ -42,7 +43,7 @@ export default function LecturerDashboard() {
 
     return (
 
-            <div className="space-y-6">
+            <div className="space-y-20">
                 {/* Welcome Header */}
 
                 <div className="bg-gradient-to-r  flex justify-between items-center from-green-600 to-blue-600 text-white rounded-lg p-6">
@@ -128,31 +129,9 @@ export default function LecturerDashboard() {
                 </div>
 
                 {/* Charts Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Feedback Distribution</CardTitle>
-                            <CardDescription>
-                                Distribution of ratings across all feedback criteria
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <FeedbackDistributionChart />
-                        </CardContent>
-                    </Card>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Rating Trends</CardTitle>
-                            <CardDescription>
-                                Average ratings over time across all courses
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <RatingTrendsChart />
-                        </CardContent>
-                    </Card>
-                </div>
+                    <LecturerPerformanceInfo/>
+
 
                 {/* Courses Overview */}
                 <Card>
