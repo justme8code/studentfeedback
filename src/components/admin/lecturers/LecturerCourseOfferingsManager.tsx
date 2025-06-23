@@ -32,7 +32,7 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
     useEffect(() => {
         setLoading(true);
         Promise.all([
-            getAllCourseOfferingsByLecturerId(lecturer.id),
+            getAllCourseOfferingsByLecturerId(lecturer.id??0),
             getAllCourses(),
             getCurrentSession(),
         ]).then(([offeringsRes, coursesRes, semestersRes]) => {
@@ -71,24 +71,11 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
             setError("Please select a course and semester");
             return;
         }
-        const res = await createCourseOfferings(lecturer.id, form.course_id, form.semester_id);
+        const res = await createCourseOfferings(lecturer.id??0, form.course_id, form.semester_id);
         if (res.status) {
-            /*setSuccess(
-                res.successData?.length > 0
-                    ? res.duplicatesData?.length > 0
-                        // Case: Successes AND Duplicates
-                        ? `${res.successData.length} assigned successfully, ${res.duplicatesData.length} duplicates found.`
-                        // Case: Successes but NO Duplicates
-                        : 'All courses assigned successfully.'
-                    : res.duplicatesData?.length > 0
-                        // Case: NO Successes but Duplicates exist
-                        ? 'Some courses were duplicates and not assigned.'
-                        // Case: NO Successes and NO Duplicates
-                        : 'No courses assigned.'
-            );*/
             setSuccess("Course Assigned assigned successfully.");
 
-            const offeringsRes = await getAllCourseOfferingsByLecturerId(lecturer.id);
+            const offeringsRes = await getAllCourseOfferingsByLecturerId(lecturer.id??0);
             if (offeringsRes.status && offeringsRes.data) setOfferings(offeringsRes.data);
             setForm({ course_id: "", semester_id: "" });
         } else {

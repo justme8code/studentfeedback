@@ -5,7 +5,7 @@ import { useToast } from "@/lib/hooks/use-toast-store";
 import { ConfirmDeleteModal } from "@/components/modals/confirm-delete-modal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Pencil, Trash2, User } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import type { User as UserType } from "@/lib/types/user";
 import { LecturerCourseOfferingsManager } from "@/components/admin/lecturers/LecturerCourseOfferingsManager";
 import {LecturerProfile, StudentProfile} from "@/lib/types";
@@ -34,7 +34,7 @@ export function LecturerList() {
     if (!deleteId) return;
     const res = await deleteLecturer(deleteId);
     if (res.status === 200) {
-      setLecturers((prev) => prev.filter((l) => l.id !== deleteId));
+      setLecturers((prev) => prev.filter((l) => l.id !.toString()== deleteId));
       showSuccessToast("Lecturer deleted successfully!");
     } else {
       showErrorToast(res.error?.message || "Failed to delete lecturer.");
@@ -52,7 +52,7 @@ export function LecturerList() {
   const handleEdit = async () => {
     if (!editLecturer) return;
     if (!window.confirm("Are you sure you want to save these changes?")) return;
-    const res = await updateLecturer(editLecturer.id!, editForm);
+    const res = await updateLecturer(editLecturer.id!.toString(), editForm);
     if (res.status === 200 && res.data) {
       setLecturers((prev) => prev.map((l) => l.id === editLecturer.id ? { ...l, ...editForm } : l));
       showSuccessToast("Lecturer updated successfully!");
@@ -108,7 +108,7 @@ export function LecturerList() {
                       <Button size={"sm"} variant="outline" onClick={() => openEditModal(lecturer)} title="Edit">
                         <Pencil className="w-4 h-4" />
                       </Button>
-                      <Button  size={"sm"} variant="destructive" onClick={() => { setDeleteId(lecturer.id!); setModalOpen(true); }} title="Delete">
+                      <Button  size={"sm"} variant="destructive" onClick={() => { setDeleteId(lecturer.id!.toString()); setModalOpen(true); }} title="Delete">
                         <Trash2 className="w-4 h-4" />
                       </Button>
                       <Dialog open={offeringsModalOpen && offeringsLecturer?.id === lecturer.id} onOpenChange={open => { setOfferingsModalOpen(open); if (!open) setOfferingsLecturer(null); }}>

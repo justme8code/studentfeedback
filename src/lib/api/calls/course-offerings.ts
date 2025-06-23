@@ -3,8 +3,8 @@
 import {makeAuthRequest} from "@/lib/api/session";
 import {CourseOfferingWithDetails} from "@/lib/types/course-offering";
 
-type r = {lecturer_id:string,course_id:string,semester_id:string,id?:string};
-export async function createCourseOfferings(lecturer_id: string, course_id: string, semester_id: string) {
+type r = {lecturer_id:number,course_id:string,semester_id:string,id?:string};
+export async function createCourseOfferings(lecturer_id: number, course_id: string, semester_id: string) {
     const { data, status, error } = await makeAuthRequest<r[],{success:r[],duplicates:r[]}>({
         method: "POST",
         url: `/course-offerings/batch`,
@@ -13,7 +13,7 @@ export async function createCourseOfferings(lecturer_id: string, course_id: stri
     return { successData:data?.success??[],duplicatesData:data?.duplicates??[], status: status === 201, error };
 }
 
-export async function getAllCourseOfferingsByLecturerId(lecturer_id: string) {
+export async function getAllCourseOfferingsByLecturerId(lecturer_id: number) {
     const { data, status, error } = await makeAuthRequest<null,CourseOfferingWithDetails[]>({
         method: "GET",
         url: `/course-offerings/lecturer/${lecturer_id}`,

@@ -1,8 +1,8 @@
 import {Department} from "@/lib/types/department";
 
 export interface Lecturer{
-    id:string,
+    id?:number,
     full_name:string,
     email:string,
-    department:Department,
+    department?:Department,
 }
