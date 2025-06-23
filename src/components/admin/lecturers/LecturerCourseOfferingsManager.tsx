@@ -8,14 +8,13 @@ import {
 import { getAllCourses } from "@/lib/api/calls/course";
 import { getCurrentSession } from "@/lib/api/calls/session";
 
-// Import UI components from your library (e.g., shadcn/ui)
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardDescription, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import {AlertTriangle, CheckCircle2, BookOpen, Minus, Delete, MinusCircle} from "lucide-react";
+import {AlertTriangle, CheckCircle2, MinusCircle} from "lucide-react";
 import {CourseOfferingWithDetails} from "@/lib/types/course-offering";
 import {Course} from "@/lib/types";
 import {Semester} from "@/lib/types/semester";
@@ -45,7 +44,7 @@ export function LecturerCourseOfferingsManager({ lecturer , onClose}: { lecturer
     }, [lecturer.id]);
 
     const handleUnassign = async (id:number)=>{
-        unAssignCourseByIds([id])
+        unAssignCourseByIds([id.toString()])
             .then(value => {
                 if (value.status) {
                     setOfferings(prev => prev.filter(o => o.id !== id));
