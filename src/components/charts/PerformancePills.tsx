@@ -23,7 +23,7 @@ const Pill = ({ label, score }: PillProps) => (
             style={{ backgroundColor: getPillColor(score) }}
         >
       {/* No more `parseFloat` needed here! */}
-            {score.toFixed(2)}
+            {score}
     </span>
     </div>
 );

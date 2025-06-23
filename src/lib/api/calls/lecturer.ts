@@ -1,7 +1,6 @@
 'use server';
 import {makeAuthRequest} from "@/lib/api/session";
 import type { User } from "@/lib/types/user";
-import {myRequest} from "@/lib/api/axios";
 import {Questionnaire} from "@/lib/types/questionnaire";
 import {LecturerPerformanceChart} from "@/lib/types/kpi";
 
@@ -79,6 +78,6 @@ export async function getLecturerPerformanceByCriterion(lecturerId: number) {
     method: "GET",
     url: `/kpis/lecturers/performance-chart`
   });
-  return {data,status:status===200,error};
+  return {data:data??[],status:status===200,error};
 }
 

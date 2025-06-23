@@ -3,15 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Users, Star, TrendingUp, MessageSquare } from "lucide-react";
 
-// --- Assuming these are in the correct path ---
-
 import {useUserStore} from "@/lib/hooks/useUserStore";
 import {useToast} from "@/lib/hooks/use-toast-store";
 import { useLecturerDashboardOverviewQuery } from "@/lib/hooks/kpi/useLecturerDashboardOverview";
 import {useActiveSession} from "@/lib/hooks/kpi/useCurrentSession";
 import {useLecturerCoursePerformance} from "@/lib/hooks/kpi/useLecturerCoursePerformance";
-import FeedbackDistributionChart from "@/components/charts/FeedbackDistributionChart";
-import RatingTrendsChart from "@/components/charts/RatingTrendsChart";
 import {useRecentTextFeedbacks} from "@/lib/hooks/kpi/useRecentTextFeedbacks";
 import LecturerPerformanceInfo from "@/app/(lecturer)/lecturers/LecturerPerformanceInfo";
 
@@ -22,9 +18,9 @@ export default function LecturerDashboard() {
 
     const {showErrorToast } = useToast();
 
-    const { data: dash, isLoading: loadingOverview, error: errorOverview } = useLecturerDashboardOverviewQuery(String(user?.id));
-    const { data: sessions, isLoading: loadingSessions, error: sessionError } = useActiveSession();
-    const { data: feedbacks, isLoading: feedbackloading, error: feedbackserror } =  useRecentTextFeedbacks(String(user?.id));
+    const { data: dash, error: errorOverview } = useLecturerDashboardOverviewQuery(String(user?.id));
+    const { data: sessions, error: sessionError } = useActiveSession();
+    const { data: feedbacks} =  useRecentTextFeedbacks(String(user?.id));
 
     const sessionId = sessions?.[0]?.sessionId;
     const findCurrentSession = sessions?.find((session)=> session.isCurrent);
@@ -32,7 +28,6 @@ export default function LecturerDashboard() {
     console.log(feedbacks);
     const {
         data: coursePerformance,
-        isLoading: courseLoading,
         error: courseError
     } = useLecturerCoursePerformance(String(user?.id), sessionId??0);
 
@@ -90,7 +85,7 @@ export default function LecturerDashboard() {
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
+                            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
                             <BookOpen className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
@@ -191,7 +186,7 @@ export default function LecturerDashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                {feedbacks.map((response, index) => (
+                                {feedbacks.map((response) => (
                                     <div key={response.submittedAt + response.courseName} className="p-4 border rounded-lg">
                                         <div className="flex items-center justify-between mb-2">
                                             <h4 className="font-medium">{response.courseName}</h4>

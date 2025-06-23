@@ -43,8 +43,3 @@ export interface LecturerPerformanceChart {
     "average_score":number,
 }
 
-// This represents the raw data shape from your API
-export interface LecturerPerformanceChartAPI {
-    criterion_name: string;
-    average_score: string; // APIs often send decimal/numeric types as strings
-}
