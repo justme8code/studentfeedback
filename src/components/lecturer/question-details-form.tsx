@@ -13,9 +13,7 @@ import { useUserStore } from "@/lib/hooks/useUserStore";
 import {CourseOfferingWithDetails} from "@/lib/types/course-offering";
 
 
-// --- STEP 1: DEFINE THE TYPE FOR THE DATA WE ARE FETCHING ---
-// (It's good practice to have this in a dedicated types file, e.g., /lib/types/index.ts)
-// For now, we'll define it here for clarity.
+
 export interface Course {
     id: number;
     course_code: string;
@@ -32,14 +30,13 @@ interface QuestionnaireDetailsFormProps {
 export function QuestionnaireDetailsForm({ form }: QuestionnaireDetailsFormProps) {
     const { user } = useUserStore();
 
-    // --- STEP 2: CHANGE THE STATE TO HOLD THE CORRECT, FULL OBJECT ---
     const [offerings, setOfferings] = useState<CourseOfferingWithDetails[]>([]);
-    // --- END OF STEP 2 ---
+
 
     useEffect(() => {
         const fetchOfferings = async () => {
             if (user && user.id) {
-                const result = await getAllCourseOfferingsByLecturerId(user.id.toString());
+                const result = await getAllCourseOfferingsByLecturerId(user.id);
                 if (result.data) {
                     // --- STEP 3: STORE THE ENTIRE ARRAY OF OFFERINGS, NOT JUST THE COURSES ---
                     setOfferings(result.data);
