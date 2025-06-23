@@ -67,7 +67,7 @@ export async function signUp(values: {
         return {status:status === 201,error:error.message}
     }
     else {
-        return {status:status === 201,error:data.error}
+        return {status:status === 201,error:data?.error??error.message}
     }
 
 
